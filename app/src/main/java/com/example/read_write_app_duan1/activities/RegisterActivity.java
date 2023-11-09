@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.read_write_app_duan1.MainActivity;
@@ -20,11 +23,30 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    EditText edtRegisterEmail, edtRegisterUsername, edtRegisterPass, edtDateOfBirth;
+    Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        mAuth = FirebaseAuth.getInstance(); // Initialize FirebaseAuth
+
+        //Ánh xạ
+        edtRegisterEmail = findViewById(R.id.edtRegisterEmail);
+        edtRegisterUsername = findViewById(R.id.edtRegisterUsername);
+        edtRegisterPass = findViewById(R.id.edtRegisterPass);
+        edtDateOfBirth = findViewById(R.id.edtDateOfBirth);
+        btnRegister = findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = edtRegisterEmail.getText().toString();
+                String password = edtRegisterPass.getText().toString();
+                createAccount(email, password);
+            }
+        });
     }
     private void createAccount(String email, String pass) {
         mAuth.createUserWithEmailAndPassword(email, pass)

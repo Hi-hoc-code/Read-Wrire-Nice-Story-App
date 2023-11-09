@@ -5,26 +5,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.RegisterActivity"
-    android:padding="10dp"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp"
+    android:paddingTop="50dp"
     android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng ký để viết và đọc truyện \nmiễn phí\n"
+        android:textSize="20dp"
+        android:lineHeight="24dp"
+        android:gravity="center"
+        android:layout_gravity="center"/>
     <EditText
-        android:id="@+id/edtEmail"
+        android:id="@+id/edtRegisterEmail"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="Email"
+        android:inputType="text"
         android:padding="10dp"/>
     <EditText
-        android:id="@+id/edtPassword"
+        android:id="@+id/edtRegisterUsername"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Password"
+        android:hint="Tên đăng nhập"
+        android:inputType="text"
         android:padding="10dp"/>
+    <EditText
+        android:id="@+id/edtRegisterPass"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Mật khẩu"
+        android:inputType="textPassword"
+        android:padding="10dp"/>
+    <EditText
+        android:id="@+id/edtDateOfBirth"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Ngày sinh"
+        android:inputType="date"
+        android:padding="10dp"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dieukhoan"/>
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:text="Đăng Nhập"/>
-
+        android:backgroundTint="@color/primary_color"
+        android:text="Đăng Ký"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_message"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
