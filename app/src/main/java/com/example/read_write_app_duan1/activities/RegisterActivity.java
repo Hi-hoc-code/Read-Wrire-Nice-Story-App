@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.read_write_app_duan1.MainActivity;
 import com.example.read_write_app_duan1.R;
 import com.example.read_write_app_duan1.models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
