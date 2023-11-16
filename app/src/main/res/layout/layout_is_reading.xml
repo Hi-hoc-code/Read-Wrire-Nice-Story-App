@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="140dp"
+    android:layout_height="220dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="8dp"
+    android:background="#F6F6F6"
+    android:layout_marginHorizontal="10dp">
+    <LinearLayout
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgRecommendStory"
+            android:layout_width="140dp"
+            android:layout_height="175dp"
+            android:src="@drawable/avatar"/>
+        <TextView
+            android:id="@+id/tvNameStory"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Book1"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

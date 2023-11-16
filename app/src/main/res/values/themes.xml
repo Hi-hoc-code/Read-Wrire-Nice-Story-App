@@ -4,6 +4,5 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-
     <style name="Theme.Read_write_app_duan1" parent="Base.Theme.Read_write_app_duan1" />
 </resources>
