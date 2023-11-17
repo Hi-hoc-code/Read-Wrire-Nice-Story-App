@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="180dp"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="8dp"
+    android:backgroundTint="#E7E1E1"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/tvType"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:text="Kinh dị"/>
+        <ImageView
+            android:id="@+id/imgType"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/avatar"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+    
+</androidx.cardview.widget.CardView>
