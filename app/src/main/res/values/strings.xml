@@ -3,4 +3,6 @@
     <string name="dieukhoan">Tôi đã đọc và đồng ý với <b>Điều khoản dịch vụ </b>và <b>chính sách Bảo mật</b> của <b>Wattpad</b></string>
     <string name="login_message"><b>Bạn có tài khoản?</b> <font color="#FF9901">Đăng nhập</font></string>
     <string name="forget_pass"><b>Quên mật khẩu?</b></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

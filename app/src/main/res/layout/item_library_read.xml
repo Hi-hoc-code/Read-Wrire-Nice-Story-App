@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<ImageView
+    android:id="@+id/imgStoryReadLibrary"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="wrap_content"
+    android:src="@drawable/story1"
+    android:adjustViewBounds="true"
+    />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        >
+        <TextView
+            android:id="@+id/tvNameReadLibrary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BÓNG HỒNG SA NGÃ"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:layout_marginTop="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thể loại: "
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                />
+            <TextView
+                android:id="@+id/tvTypeReadLibrary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text= "Kinh dị"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvChapterReadLibrary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "30 chương"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            />
+        <ImageView
+            android:id="@+id/imgDeleteRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete"
+            ></ImageView>
+    </LinearLayout>
+</LinearLayout>

@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Library"/>
+   >
+   <LinearLayout
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
 
-</LinearLayout>
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="Thư viện"
+    android:textStyle="bold"
+    android:textSize="36sp"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="30dp"
+    android:layout_marginLeft="20dp"
+    />
+
+       <com.google.android.material.appbar.AppBarLayout
+           android:id="@+id/appBarLayout"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           >
+
+           <com.google.android.material.tabs.TabLayout
+               android:background="#E7E1E1"
+               android:id="@+id/tabLayout"
+               android:layout_width="match_parent"
+               android:layout_height="60dp">
+
+
+           </com.google.android.material.tabs.TabLayout>
+       </com.google.android.material.appbar.AppBarLayout>
+
+       <androidx.viewpager.widget.ViewPager
+           android:id="@+id/viewPager"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content">
+       </androidx.viewpager.widget.ViewPager>
+   </LinearLayout>
+
+</RelativeLayout>
