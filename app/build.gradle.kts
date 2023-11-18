@@ -50,5 +50,5 @@ dependencies {
 
     implementation ("com.firebaseui:firebase-ui-database:8.0.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
-
+    implementation ("com.squareup.picasso:picasso:2.8")
 }

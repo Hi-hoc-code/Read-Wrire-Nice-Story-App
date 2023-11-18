@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
-import com.example.read_write_app_duan1.adapter.IsReadingBookAdapter;
-import com.example.read_write_app_duan1.adapter.RecommendStoryAdapter;
+import com.example.read_write_app_duan1.adapter.HomeBookAdapter;
 import com.example.read_write_app_duan1.models.Book;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +30,7 @@ public class HomeFragment extends Fragment {
     FirebaseStorage mStorage;
     ArrayList<Book> list;
     RecyclerView rcvRecommendStory, rcvReadingBook;
-    RecommendStoryAdapter recommendStoryAdapter;
-    IsReadingBookAdapter readingBookAdapter;
+    HomeBookAdapter homeBookAdapter;
 
     @Nullable
     @Override
@@ -51,10 +49,9 @@ public class HomeFragment extends Fragment {
         rcvRecommendStory.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         rcvReadingBook.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         list = new ArrayList<>();
-        readingBookAdapter = new IsReadingBookAdapter(getContext(),list);
-        rcvReadingBook.setAdapter(readingBookAdapter);
-        recommendStoryAdapter = new RecommendStoryAdapter(getContext(),list);
-        rcvRecommendStory.setAdapter(recommendStoryAdapter);
+        homeBookAdapter = new HomeBookAdapter(getContext(),list);
+        rcvReadingBook.setAdapter(homeBookAdapter);
+        rcvRecommendStory.setAdapter(homeBookAdapter);
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -74,8 +71,7 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 list.add(book1);
-                recommendStoryAdapter.notifyDataSetChanged();
-                readingBookAdapter.notifyDataSetChanged();
+                homeBookAdapter.notifyDataSetChanged();
             }
 
             @Override

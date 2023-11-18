@@ -16,24 +16,23 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class IsReadingBookAdapter  extends RecyclerView.Adapter<IsReadingBookAdapter.MyViewHoler> {
+public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.MyViewHoler> {
     Context context;
     ArrayList<Book> list;
-
-    public IsReadingBookAdapter(Context context, ArrayList<Book> list) {
+    public HomeBookAdapter(Context context, ArrayList<Book> list) {
         this.context = context;
         this.list = list;
     }
 
     @NonNull
     @Override
-    public IsReadingBookAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recommend_story, parent, false);
-        return new IsReadingBookAdapter.MyViewHoler(view);
+        return new MyViewHoler(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull IsReadingBookAdapter.MyViewHoler holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHoler holder, int position) {
         Book book1 = list.get(position);
         holder.tvNameStory.setText(book1.getName());
         Picasso.get().load(book1.getImage()).into(holder.imgStory);
@@ -54,4 +53,3 @@ public class IsReadingBookAdapter  extends RecyclerView.Adapter<IsReadingBookAda
         }
     }
 }
-
