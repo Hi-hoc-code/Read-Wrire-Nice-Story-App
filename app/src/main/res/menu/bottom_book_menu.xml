@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Bình chọn"
+        android:icon="@drawable/delete"
+        android:id="@+id/menuBinhChon"/>
+    <item
+        android:title="View"
+        android:icon="@drawable/avatar"
+        android:id="@+id/menuView"/>
+    <item
+        android:title="Chia se"
+        android:icon="@drawable/home_icon"
+        android:id="@+id/menuChiSe"/>
+</menu>
