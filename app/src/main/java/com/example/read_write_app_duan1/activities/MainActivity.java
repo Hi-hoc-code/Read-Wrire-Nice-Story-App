@@ -29,6 +29,14 @@ public class MainActivity extends AppCompatActivity {
         addControls();
         //Xử lí xự kiến tại addEvents()
         addEvents();
+
+        //SET FRAGMENT MAC DINH KHI CHAY LEN
+        HomeFragment fragment = new HomeFragment();//fragment mong muon
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameLayout,fragment)
+                .commit();
+
     }
 
     private void addEvents() {

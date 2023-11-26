@@ -29,7 +29,7 @@ public class Book {
         this.image = image;
     }
 
-    public Book(String name, String image) {
+    public Book(String name) {
         this.name = name;
         this.image = image;
     }

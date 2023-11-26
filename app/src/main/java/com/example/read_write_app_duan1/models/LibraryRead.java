@@ -2,7 +2,19 @@ package com.example.read_write_app_duan1.models;
 
 public class LibraryRead {
 
-    String chapter, name, author, image, type;
+    String chapter, name, author, image, type, checkBook;
+
+    public LibraryRead(String checkBook) {
+        this.checkBook = checkBook;
+    }
+
+    public String getCheckBook() {
+        return checkBook;
+    }
+
+    public void setCheckBook(String checkBook) {
+        this.checkBook = checkBook;
+    }
 
     public LibraryRead() {
     }

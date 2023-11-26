@@ -32,42 +32,6 @@ public class WriteLibraryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_write_library, container, false);
         imageView = view.findViewById(R.id.imgDeletedWrite);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                LayoutInflater inflater = getLayoutInflater();
-                View view2 = inflater.inflate(R.layout.dialog_delete, null);
-                tvHuy = view.findViewById(R.id.tvHuy);
-                tvYes = view.findViewById(R.id.tvYes);
-                builder.setView(view);
-
-                //show
-                AlertDialog alertDialog = builder.create();
-                // sửa bo góc tran
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                //khi nào nhấn nút mới out dialog
-                alertDialog.setCancelable(false);
-                alertDialog.show();
-
-                tvYes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        alertDialog.dismiss();
-                    }
-                });
-
-                //nút hủy
-                tvHuy.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
-
 
 
         return view;
