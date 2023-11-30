@@ -1,64 +1,53 @@
 package com.example.read_write_app_duan1.models;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Comment {
-    private String uidComment, uidUser, uidBook, name, reply;
-    private int imgAvatarUser;
+    private String author, text, uid;
 
-
-    public Comment(String uidComment, String uidUser, String uidBook, String name, String reply, int imgAvatarUser) {
-        this.uidComment = uidComment;
-        this.uidUser = uidUser;
-        this.uidBook = uidBook;
-        this.name = name;
-        this.reply = reply;
-        this.imgAvatarUser = imgAvatarUser;
+    public Comment() {
     }
 
-    public String getUidComment() {
-        return uidComment;
+    public Comment(String author, String text, String uid) {
+        this.author = author;
+        this.text = text;
+        this.uid = uid;
     }
 
-    public void setUidComment(String uidComment) {
-        this.uidComment = uidComment;
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("author", author);
+        result.put("text", text);
+
+        return result;
     }
 
-    public String getUidUser() {
-        return uidUser;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUidUser(String uidUser) {
-        this.uidUser = uidUser;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
-    public String getUidBook() {
-        return uidBook;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setUidBook(String uidBook) {
-        this.uidBook = uidBook;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getReply() {
-        return reply;
-    }
-
-    public void setReply(String reply) {
-        this.reply = reply;
-    }
-
-    public int getImgAvatarUser() {
-        return imgAvatarUser;
-    }
-
-    public void setImgAvatarUser(int imgAvatarUser) {
-        this.imgAvatarUser = imgAvatarUser;
+    public void setText(String text) {
+        this.text = text;
     }
 }

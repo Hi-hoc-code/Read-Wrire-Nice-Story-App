@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,18 +21,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-public class HomeFragment extends Fragment {
-    DatabaseReference databaseReference;
-    FirebaseDatabase mDatabase;
-    FirebaseStorage mStorage;
-    ArrayList<Book> list;
-    RecyclerView rcvRecommendStory, rcvReadingBook;
-    HomeBookAdapter homeBookAdapter;
+public class HomeFragment extends Fragment{
+    private DatabaseReference databaseReference;
+    private ArrayList<Book> list;
+    private RecyclerView rcvRecommendStory, rcvReadingBook;
+    private HomeBookAdapter homeBookAdapter;
 
     @Nullable
     @Override
@@ -41,36 +40,38 @@ public class HomeFragment extends Fragment {
     }
 
     private void addEvents(View view) {
-        mDatabase=FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("Book");
-        mStorage = FirebaseStorage.getInstance();
         rcvReadingBook = view.findViewById(R.id.rcvReading);
         rcvRecommendStory = view.findViewById(R.id.rcvRecommendStory);
         rcvRecommendStory.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         rcvReadingBook.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         list = new ArrayList<>();
-        homeBookAdapter = new HomeBookAdapter(getContext(),list);
+        // Initialize FragmentManager
+        FragmentManager fragmentManager = getParentFragmentManager();
+        homeBookAdapter = new HomeBookAdapter(getContext(),list , fragmentManager);
         rcvReadingBook.setAdapter(homeBookAdapter);
         rcvRecommendStory.setAdapter(homeBookAdapter);
+
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Book book1 = new Book();
+                Book book = new Book();
                 Object data = snapshot.getValue();
                 if (data != null) {
                     if (data instanceof Map) {
                         Map<String, Object> mapData = (Map<String, Object>) data;
-                        book1.setName(String.valueOf(mapData.get("name")));
-                        book1.setImage(String.valueOf(mapData.get("image")));
+                        book.setName(String.valueOf(mapData.get("name")));
+                        book.setImage(String.valueOf(mapData.get("image")));
+                        book.setId(String.valueOf(mapData.get("idBook")));
                         String chapterContent= "";
                         if(snapshot.child("chapter").child("chapter1").exists()){
                             chapterContent = snapshot.child("chapter").child("chapter1").child("content").getValue(String.class);
                         }
-                        book1.setChapter(chapterContent);
+                        book.setChapter(chapterContent);
                         // Set other book properties accordingly
                     }
                 }
-                list.add(book1);
+                list.add(book);
                 homeBookAdapter.notifyDataSetChanged();
             }
 

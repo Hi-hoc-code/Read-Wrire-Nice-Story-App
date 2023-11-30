@@ -3,6 +3,7 @@ package com.example.read_write_app_duan1.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,7 +18,7 @@ import com.example.read_write_app_duan1.fragment.WriteFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     FrameLayout frameLayout;
     BottomNavigationView bottomNavigationView;
 
@@ -25,11 +26,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //Khái báo, khởi tạo, ánh xạ tại addControls()
         addControls();
         //Xử lí xự kiến tại addEvents()
         addEvents();
     }
+
 
     private void addEvents() {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
