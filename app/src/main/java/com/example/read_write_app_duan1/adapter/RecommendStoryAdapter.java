@@ -1,6 +1,5 @@
 package com.example.read_write_app_duan1.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,7 @@ public class RecommendStoryAdapter extends RecyclerView.Adapter<RecommendStoryAd
     @NonNull
     @Override
     public MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recommend_story, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
         return new MyViewHoler(view);
     }
 

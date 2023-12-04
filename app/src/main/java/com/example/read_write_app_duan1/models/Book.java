@@ -23,10 +23,11 @@ public class Book {
         this.image = image;
     }
 
-    public Book(String id, String name, String image) {
+    public Book(String id, String name, String image,String type) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.type = type;
     }
 
 

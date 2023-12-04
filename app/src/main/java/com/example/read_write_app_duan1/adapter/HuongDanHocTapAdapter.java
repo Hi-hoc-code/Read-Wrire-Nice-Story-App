@@ -28,7 +28,7 @@ public class HuongDanHocTapAdapter extends RecyclerView.Adapter<HuongDanHocTapAd
     @NonNull
     @Override
     public HuongDanHocTapAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recommend_story, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
         return new HuongDanHocTapAdapter.MyViewHoler(view);
     }
 

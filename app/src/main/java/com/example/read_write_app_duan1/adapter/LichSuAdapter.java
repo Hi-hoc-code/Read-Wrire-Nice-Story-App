@@ -28,7 +28,7 @@ public class LichSuAdapter  extends RecyclerView.Adapter<LichSuAdapter.MyViewHol
     @NonNull
     @Override
     public LichSuAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recommend_story, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
         return new LichSuAdapter.MyViewHoler(view);
     }
 

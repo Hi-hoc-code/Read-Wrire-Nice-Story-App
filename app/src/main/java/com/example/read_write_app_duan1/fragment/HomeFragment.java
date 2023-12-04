@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,10 +56,12 @@ import com.example.read_write_app_duan1.R;
 import com.example.read_write_app_duan1.adapter.HuongDanHocTapAdapter;
 import com.example.read_write_app_duan1.adapter.LichSuAdapter;
 import com.example.read_write_app_duan1.adapter.TieuThuyetAdapter;
-import com.example.read_write_app_duan1.adapter.TinhYeuAdapte;
+import com.example.read_write_app_duan1.adapter.TinhYeuAdapter;
 import com.example.read_write_app_duan1.adapter.TruyenCoTichAdapter;
 import com.example.read_write_app_duan1.adapter.TruyenThuyetAdapter;
 import com.example.read_write_app_duan1.models.Book;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,12 +71,22 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
     DatabaseReference databaseReference;
     FirebaseStorage mStorage;
     RecyclerView rcvTieuThuyet, rcvTruyenThuyet, rcvCoTich, rcvTinhYeu, rcvHuongDanHocTap, rcvLichSuChinhTri;
     DrawerLayout drawerLayout;
+    ShapeableImageView imgAvatar;
+    ArrayList<Book> listTieuThuyet,listCoTich, listTinhYeu,listTruyenThuyet,listHuongDanHocTap, listLichSuVaChinhTri ;
+    TieuThuyetAdapter tieuThuyetAdapter;
+    HuongDanHocTapAdapter huongDanHocTapAdapter;
+    TruyenCoTichAdapter truyenCoTichAdapter;
+    TinhYeuAdapter tinhYeuAdapter;
+    LichSuAdapter lichSuAdapter;
+    TruyenThuyetAdapter truyenThuyetAdapter;
+
 
     @Nullable
     @Override
@@ -84,101 +97,127 @@ public class HomeFragment extends Fragment {
     }
 
     private void addEvents(View view) {
+        loadDataForCategory("Hướng dẫn học tập");
+        loadDataForCategory("Tiểu thuyết");
+        loadDataForCategory("Truyền thuyết");
+        loadDataForCategory("Tình yêu");
+        loadDataForCategory("Lịch sử và chính trị");
+        loadDataForCategory("Truyện cổ tích");
+        imgAvatar  = view.findViewById(R.id.imgAvatar);
         drawerLayout = view.findViewById(R.id.drawerLayout);
+        // Click imgAvatar open/ close drawer navigation
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }else{
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+        // RecycleView book-> type
+        //init rcv
+        rcvTieuThuyet = view.findViewById(R.id.rcvTieuThuyet);
+        rcvTieuThuyet.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
 
-        // Khởi tạo danh sách sách cho từng loại
-        ArrayList<Book> tieuThuyetBooks = new ArrayList<>();
-        ArrayList<Book> truyenThuyetBooks = new ArrayList<>();
-        ArrayList<Book> truyenCoTichBooks = new ArrayList<>();
-        ArrayList<Book> tinhYeuBooks = new ArrayList<>();
-        ArrayList<Book> lichSuChinhTri = new ArrayList<>();
-        ArrayList<Book> huongDanHocTap = new ArrayList<>();
-        // Tham chiếu đến Firebase
-        DatabaseReference bookReference = FirebaseDatabase.getInstance().getReference("Book");
-        DatabaseReference bookTypeReference = FirebaseDatabase.getInstance().getReference("BookType");
+        rcvTruyenThuyet = view.findViewById(R.id.rcvTruyenThuyet);
+        rcvTruyenThuyet.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
 
-        // Sử dụng ValueEventListener để lấy danh sách sách dựa trên loại từ BookType
-        bookTypeReference.addValueEventListener(new ValueEventListener() {
+        rcvCoTich= view.findViewById(R.id.rcvTruyenCoTich);
+        rcvCoTich.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        rcvTinhYeu = view.findViewById(R.id.rcvTinhYeu);
+        rcvTinhYeu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        rcvHuongDanHocTap = view.findViewById(R.id.rcvHuongDanHocTap);
+        rcvHuongDanHocTap.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        rcvLichSuChinhTri = view.findViewById(R.id.rcvChinhTri);
+        rcvLichSuChinhTri.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+
+        //Create Array for every rcv
+        listTieuThuyet = new ArrayList<>();
+        listTruyenThuyet = new ArrayList<>();
+        listCoTich = new ArrayList<>();
+        listTinhYeu = new ArrayList<>();
+        listHuongDanHocTap = new ArrayList<>();
+        listLichSuVaChinhTri = new ArrayList<>();
+
+        //Adapter
+
+        tieuThuyetAdapter = new TieuThuyetAdapter(getContext(), listTieuThuyet);
+        rcvTieuThuyet.setAdapter(tieuThuyetAdapter);
+
+        truyenThuyetAdapter = new TruyenThuyetAdapter(getContext(), listTruyenThuyet);
+        rcvTruyenThuyet.setAdapter(truyenThuyetAdapter);
+
+        truyenCoTichAdapter = new TruyenCoTichAdapter(getContext(), listCoTich);
+        rcvCoTich.setAdapter(truyenCoTichAdapter);
+
+        tinhYeuAdapter = new TinhYeuAdapter(getContext(), listTinhYeu);
+        rcvTinhYeu.setAdapter(tinhYeuAdapter);
+
+        huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(), listHuongDanHocTap);
+        rcvHuongDanHocTap.setAdapter(huongDanHocTapAdapter);
+
+        lichSuAdapter = new LichSuAdapter(getContext(),listLichSuVaChinhTri);
+        rcvLichSuChinhTri.setAdapter(lichSuAdapter);
+
+        // get data from firebase fill into rcv
+
+    }
+    private void loadDataForCategory(String category){
+        DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference().child("Book");
+        booksRef.orderByChild("type").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String bookType = snapshot.child("type").getValue(String.class);
-
-                    // Lọc dữ liệu sách dựa trên loại sách từ bookType
-                    Query query = bookReference.orderByChild("type").equalTo(bookType);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            ArrayList<Book> books = new ArrayList<>();
-                            for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
-                                Book book = bookSnapshot.getValue(Book.class);
-                                if (book != null) {
-                                    books.add(book);
-                                }
-                            }
-                            // Gán dữ liệu vào RecyclerView tương ứng với loại sách
-                            switch (bookType) {
-                                case "Tiểu thuyết":
-                                    tieuThuyetBooks.addAll(books);
-                                    TieuThuyetAdapter tieuThuyetAdapter = new TieuThuyetAdapter(getContext(), tieuThuyetBooks);
-                                    rcvTieuThuyet.setAdapter(tieuThuyetAdapter);
-                                    break;
-                                case "Truyền thuyết":
-                                    truyenThuyetBooks.addAll(books);
-                                    TruyenThuyetAdapter truyenThuyetAdapter = new TruyenThuyetAdapter(getContext(), truyenThuyetBooks);
-                                    rcvTruyenThuyet.setAdapter(truyenThuyetAdapter);
-                                    break;
-                                case "Tình yêu":
-                                    tinhYeuBooks.addAll(books);
-                                    TinhYeuAdapte tinhYeuAdapte = new TinhYeuAdapte(getContext(),tinhYeuBooks);
-                                    rcvTinhYeu.setAdapter(tinhYeuAdapte);
-                                case "Truyện cổ tích":
-                                    truyenCoTichBooks.addAll(books);
-                                    TruyenCoTichAdapter coTichAdapter = new TruyenCoTichAdapter(getContext(),truyenCoTichBooks);
-                                    rcvCoTich.setAdapter(coTichAdapter);
-                                case "Lịch sử và chính trị":
-                                    lichSuChinhTri.addAll(books);
-                                    LichSuAdapter lichSuAdapter = new LichSuAdapter(getContext(),lichSuChinhTri);
-                                    rcvLichSuChinhTri.setAdapter(lichSuAdapter);
-                                case "Hướng dẫn học tập":
-                                    huongDanHocTap.addAll(books);
-                                    HuongDanHocTapAdapter huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(),huongDanHocTap);
-                                    rcvHuongDanHocTap.setAdapter(huongDanHocTapAdapter);
-                            }
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Xử lý lỗi nếu có
-                        }
-                    });
+                switch (category) {
+                    case "Hướng dẫn học tập" :{
+                        handleDataForRecyclerView(dataSnapshot, listHuongDanHocTap, huongDanHocTapAdapter);
+                        break;
+                    }
+                    case "Tiểu thuyết":{
+                        handleDataForRecyclerView(dataSnapshot, listTieuThuyet, tieuThuyetAdapter);
+                        break;
+                    }
+                    case "Truyền thuyết":{
+                        handleDataForRecyclerView(dataSnapshot, listTruyenThuyet, truyenThuyetAdapter);
+                        break;
+                    }
+                    case "Tình yêu":{
+                        handleDataForRecyclerView(dataSnapshot, listTinhYeu, tinhYeuAdapter);
+                        break;
+                    }
+                    case "Lịch sử và chính trị" :{
+                        handleDataForRecyclerView(dataSnapshot,listLichSuVaChinhTri, lichSuAdapter);
+                        break;
+                    }
+                    case "Truyện cổ tích":{
+                        handleDataForRecyclerView(dataSnapshot, listCoTich,truyenCoTichAdapter);
+                        break;
+                    }
+                    // Thêm các case khác tương ứng với từng thể loại sách và RecyclerView
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý lỗi nếu có
+                Toast.makeText(getContext(),"Lỗi rồi ba ơi",Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Gán RecyclerView từ layout
-        rcvTieuThuyet = view.findViewById(R.id.rcvTieuThuyet);
-        rcvTieuThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        rcvTruyenThuyet = view.findViewById(R.id.rcvTruyenThuyet);
-        rcvTruyenThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        rcvCoTich= view.findViewById(R.id.rcvTruyenCoTich);
-        rcvCoTich.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        rcvTinhYeu = view.findViewById(R.id.rcvTinhYeu);
-        rcvTinhYeu.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        rcvLichSuChinhTri = view.findViewById(R.id.rcvChinhTri);
-        rcvLichSuChinhTri.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        rcvHuongDanHocTap = view.findViewById(R.id.rcvHuongDanHocTap);
-        rcvHuongDanHocTap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+    private void handleDataForRecyclerView(DataSnapshot dataSnapshot, ArrayList<Book> bookList, RecyclerView.Adapter adapter) {
+        bookList.clear();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            Book book = snapshot.getValue(Book.class);
+            if (book != null) {
+                String name = book.getName();
+                String image = book.getImage();
+                bookList.add(new Book(name, image));
+            }
+        }
+        adapter.notifyDataSetChanged(); // Cập nhật RecyclerView sau khi thêm dữ liệu
     }
 }
+

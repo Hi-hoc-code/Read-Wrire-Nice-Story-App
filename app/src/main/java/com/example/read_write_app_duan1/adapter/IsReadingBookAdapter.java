@@ -28,7 +28,7 @@ public class IsReadingBookAdapter  extends RecyclerView.Adapter<IsReadingBookAda
     @NonNull
     @Override
     public IsReadingBookAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_recommend_story, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
         return new IsReadingBookAdapter.MyViewHoler(view);
     }
 
