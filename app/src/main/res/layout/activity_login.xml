@@ -50,6 +50,7 @@
         android:inputType="textPassword"
         android:hint="Mật khẩu"/>
     <Button
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:backgroundTint="@color/primary_color"
