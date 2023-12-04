@@ -3,7 +3,7 @@ package com.example.read_write_app_duan1.models;
 public class Users {
     private String userID, email, username, password, dateOfBirth;
 
-    public Users() {
+    public Users(String userId, String email, String username, String password, String confirmpass, String dateOfBirth) {
     }
 
     public Users(String userID, String email, String username, String password, String dateOfBirth) {

@@ -7,58 +7,96 @@
     tools:context=".activities.LoginActivity"
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
+    android:gravity="center"
     android:orientation="vertical">
-    <TextView
-        android:layout_marginTop="50dp"
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/logoapp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:gravity="center"
+        android:textColor="@color/black"
         android:text="Đăng nhập để viết và đọc truyện miễn phí"
-        android:textSize="20dp"
-        android:gravity="center"/>
+        android:textSize="20dp" />
+
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/btnFacebookAuth"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="Facebook"/>
+            android:backgroundTint="#5578F6"
+            android:text="Facebook"
+            app:cornerRadius="10dp" />
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="5dp"/>
+
         <Button
             android:id="@+id/btnGoogleAuth"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="Google"/>
+            android:backgroundTint="#5A5555"
+            android:text="Google"
+            app:cornerRadius="10dp" />
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="_____________________ hoặc _____________________"
         android:layout_gravity="center"/>
+
     <EditText
         android:id="@+id/edtLoginUsername"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Tên đăng nhập"/>
+        android:layout_marginTop="30dp"
+        android:drawableRight="@drawable/person"
+        android:hint="Nhập Email" />
+
     <EditText
         android:id="@+id/edtLoginPassword"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="textPassword"
-        android:hint="Mật khẩu"/>
+        android:drawableRight="@drawable/eye"
+        android:hint="Mật khẩu"
+        android:inputType="textPassword" />
     <Button
+        android:id="@+id/btnDangNhap"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textSize="18dp"
         android:backgroundTint="@color/primary_color"
         android:text="ĐĂNG NHẬP"/>
     <TextView
+        android:id="@+id/tvDangKylg"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:text="@string/edit"
+        android:layout_marginTop="16dp"
+        android:textSize="18dp"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/tvquenmk"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:text="@string/forget_pass"
-        android:textSize="13dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16dp"
         android:lineHeight="16dp"
         android:layout_gravity="center"
         android:gravity="center"/>
