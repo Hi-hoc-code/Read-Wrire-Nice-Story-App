@@ -1,5 +1,6 @@
     package com.example.read_write_app_duan1.activities;
 
+    import androidx.annotation.NonNull;
     import androidx.appcompat.app.AlertDialog;
     import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,10 +8,8 @@
     import android.content.ContentResolver;
     import android.content.DialogInterface;
     import android.content.Intent;
-    import android.graphics.Bitmap;
     import android.net.Uri;
     import android.os.Bundle;
-    import android.util.Log;
     import android.view.View;
     import android.webkit.MimeTypeMap;
     import android.widget.EditText;
@@ -21,15 +20,15 @@
     import com.example.read_write_app_duan1.R;
     import com.example.read_write_app_duan1.models.Book;
     import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.database.DataSnapshot;
+    import com.google.firebase.database.DatabaseError;
+    import com.google.firebase.database.DatabaseReference;
     import com.google.firebase.database.FirebaseDatabase;
+    import com.google.firebase.database.ValueEventListener;
     import com.google.firebase.storage.FirebaseStorage;
     import com.google.firebase.storage.StorageReference;
-    import com.google.firebase.storage.UploadTask;
 
-    import java.io.FileNotFoundException;
-    import java.io.InputStream;
     import java.util.ArrayList;
-    import java.util.HashMap;
 
     public class AddActivityDemo extends AppCompatActivity {
         private TextView tvSkip, categoryTv;
@@ -71,7 +70,7 @@
             imgUpload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    choosePdf();
+
                 }
             });
 
@@ -79,7 +78,7 @@
             categoryTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    categoryPickDiaLog();
+                   loadPdfCaregories();
                 }
             });
 
@@ -87,30 +86,41 @@
             imgAddCover.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    chooseImage();
+                    openImageChooser();
                 }
             });
         }
 
-        private void chooseImage() {
-            Intent intent = new Intent();
+        // Hàm để mở Intent và chọn hình ảnh từ thiết bị
+        private void openImageChooser() {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, IMAGE_REQUEST);
         }
 
-        private void uploadPdfToStorage(Uri uri) {
-            StorageReference fileRef = reference.child("pdfs/" + System.currentTimeMillis() + "." + getFileExtension(uri));
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
 
-            fileRef.putFile(uri)
+            if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+                imageUri = data.getData();
+                // Gọi hàm để tải hình ảnh lên Firebase Realtime Database
+                uploadImageToFirebase(imageUri);
+
+                // Hiển thị hình ảnh đã chọn lên ImageView
+                imgAddCover.setImageURI(imageUri);
+            }
+        }
+
+        private void uploadImageToFirebase(Uri imageUri) {
+            StorageReference fileReference = reference.child("images/" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+            fileReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> {
-
-                        // Lấy đường dẫn của PDF sau khi tải lên thành công
-                        fileRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                            pdfUrl = downloadUri.toString();
-
-                            // Gọi hàm uploadDataToDatabase sau khi tải lên PDF thành công
-                            uploadDataToDatabase(pdfUrl, "");
+                        fileReference.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                            String imageUrl = downloadUri.toString();
+                            // Gọi hàm để lưu URL của hình ảnh vào Firebase Realtime Database
+                            saveImageUrlToDatabase(imageUrl);
                         });
                     })
                     .addOnFailureListener(e -> {
@@ -118,107 +128,110 @@
                     });
         }
 
-        private void uploadImageToFirebase(Uri uri) {
-            final StorageReference fileReference = reference.child("images/" + System.currentTimeMillis() + "." + getFileExtension(uri));
-            UploadTask uploadTask = fileReference.putFile(uri);
-            uploadTask.continueWithTask(task -> {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return fileReference.getDownloadUrl();
-            }).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    if (downloadUri != null) {
-                        String imageUrl = downloadUri.toString();
+        private void saveImageUrlToDatabase(String imageUrl) {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference("Book"); // Thay "Book" thành tên node bạn muốn lưu trữ sách
 
-                        // Gọi hàm uploadDataToDatabase sau khi tải lên ảnh thành công
-                        uploadDataToDatabase(pdfUrl, imageUrl);
+            // Lấy thông tin từ EditText
+            String name = edtTitle.getText().toString().trim();
+            String description = edtDescrice.getText().toString().trim();
+            String category = "";
+
+
+            // Tạo một đối tượng Book với thông tin và URL của hình ảnh
+            Book newBook = new Book();
+            newBook.setImage(imageUrl); // Lưu URL của hình ảnh
+            newBook.setName(name);
+            newBook.setDiscription(description);
+            newBook.setType(category);
+
+
+            // Lưu thông tin của sách vào Firebase Realtime Database
+            DatabaseReference newBookRef = database.push();
+            newBookRef.setValue(newBook)
+                    .addOnSuccessListener(aVoid -> {
+                        String bookId = newBookRef.getKey(); // Lấy ID của sách vừa thêm
+                        // Lưu URL của hình ảnh vào mục "images" trong sách tương ứng
+                        saveImageUrlToBookImage(bookId, imageUrl);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Xử lý khi lưu thông tin sách thất bại
+                    });
+        }
+        private void saveImageUrlToBookImage(String bookId, String imageUrl) {
+            DatabaseReference bookImageRef = FirebaseDatabase.getInstance().getReference("Book").child(bookId);
+            bookImageRef.push().setValue(imageUrl)
+                    .addOnSuccessListener(aVoid -> {
+                        // Xử lý khi lưu URL của hình ảnh vào mục "images" thành công
+                    })
+                    .addOnFailureListener(e -> {
+                        // Xử lý khi lưu URL của hình ảnh vào mục "images" thất bại
+                    });
+        }
+
+        private String getFileExtension(Uri uri) {
+            ContentResolver contentResolver = getContentResolver();
+            MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+            // Trả về phần mở rộng của tệp từ Uri
+            return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        }
+
+        //các dữ liệu để chon categoty
+        private void showDialogToSelectCategory() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select Category");
+
+            // Chuẩn bị danh sách loại từ ArrayList hoặc từ Firebase
+
+            String[] categoryArray = getCategoryNames(); // Hàm này trả về một mảng các tên loại
+
+            builder.setItems(categoryArray, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String selectedCategory = categoryArray[which];
+                    // Làm điều gì đó với loại đã chọn
+                    // Ví dụ: hiển thị loại đã chọn lên TextView hoặc lưu vào biến để sử dụng sau này
+                    categoryTv.setText(selectedCategory);
+                }
+            });
+
+            builder.show();
+        }
+
+        // Hàm để lấy danh sách tên loại từ ArrayList (hoặc từ Firebase)
+        private String[] getCategoryNames() {
+            // Chuyển đổi ArrayList categoryList thành mảng String tên loại
+            String[] categoryArray = new String[categoryList.size()];
+            for (int i = 0; i < categoryList.size(); i++) {
+                categoryArray[i] = categoryList.get(i).getName(); // Giả sử 'getName()' trả về tên loại
+            }
+            return categoryArray;
+        }
+
+        private void loadPdfCaregories() {
+            categoryList = new ArrayList<>();
+
+            //db reference to load categories ... db > Book
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("BookType");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    categoryList.clear();
+                    for (DataSnapshot ds: snapshot.getChildren()){
+                        //get data
+                        Book model = ds.getValue(Book.class);
+                        //add to arrayList
+                        categoryList.add(model);
                     }
-                } else {
-                    // Xử lý khi không thể lấy được URL
+                    // Sau khi lấy danh sách từ Firebase, hiển thị dialog để chọn thể loại
+                    showDialogToSelectCategory();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Xử lý khi có lỗi
                 }
             });
         }
-        @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-
-            if (requestCode == PDF_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-                Uri pdfUri = data.getData();
-                uploadPdfToStorage(pdfUri);
-            } else if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-                Uri imageUri = data.getData();
-                uploadImageToFirebase(imageUri);
-            }
-
-        }
-
-        private void choosePdf() {
-            Intent intent = new Intent();
-            intent.setType("application/pdf");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, PDF_REQUEST);
-        }
-
-        private String getFileExtension(Uri uri){
-            ContentResolver cr = getContentResolver();
-            MimeTypeMap mime = MimeTypeMap.getSingleton();
-            return mime.getExtensionFromMimeType(cr.getType(uri));
-        }
-        private String pdfUrl;
-            private void uploadDataToDatabase (String pdfUrl, String imageUrl){
-                // Tạo một unique ID cho dữ liệu mới
-                String id = FirebaseDatabase.getInstance().getReference("Book1").push().getKey();
-
-                // Lấy thông tin từ EditText hoặc các thành phần khác
-                String description = edtDescrice.getText().toString().trim();
-                String name = edtTitle.getText().toString().trim();
-                String category = categoryTv.getText().toString().trim();
-    //            String imageUrl = (imageUri != null) ? imageUri.toString() : ""; // Đường dẫn ảnh đã lấy từ ImageView
-
-                HashMap<String, String> dataMap = new HashMap<>();
-                dataMap.put("id", id);
-                dataMap.put("type", category);
-                dataMap.put("name", name);
-                dataMap.put("description", description);
-                dataMap.put("pdfUrl", pdfUrl);
-                dataMap.put("imageUrl", imageUrl);
-
-                FirebaseDatabase.getInstance().getReference("Book").child(id)
-                        .setValue(dataMap)
-                        .addOnSuccessListener(aVoid -> {
-                            // Xử lý khi lưu thành công
-                        })
-                        .addOnFailureListener(e -> {
-                            // Xử lý khi lưu thất bại
-                        });
-            }
-        private void categoryPickDiaLog(){
-            if (categoryList !=null){
-            //get string array of categories form arrayList
-            String[] categoriesArray = new String[categoryList.size()];
-            for (int i=0; i<categoryList.size(); i++){
-                categoriesArray[i] = categoryList.get(i).getType();
-            }
-
-            //alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Pick Category")
-                    .setItems(categoriesArray, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //handle item, click
-                            //get clicked  item from list
-                            String category = categoriesArray[which];
-                            //set to category textview
-                            categoryTv.setText(category);
-
-                        }
-                    })
-                    .show();
-        }
-            }
         private void unitUi() {
             tvSkip = findViewById(R.id.tvSkip);
             imgPrev = findViewById(R.id.imgPrev);
