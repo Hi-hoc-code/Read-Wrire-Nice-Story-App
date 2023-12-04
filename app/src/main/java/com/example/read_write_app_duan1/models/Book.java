@@ -10,6 +10,24 @@ public class Book {
     private String type;
     private String comment;
     private String image;
+    private String content;
+
+    public Book(String id, String name, String discription, String type, String image, String content) {
+        this.id = id;
+        this.name = name;
+        this.discription = discription;
+        this.type = type;
+        this.image = image;
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public Book(String id, String name, String author, String discription, String chapter, String status, String type, String comment, String image) {
         this.id = id;
