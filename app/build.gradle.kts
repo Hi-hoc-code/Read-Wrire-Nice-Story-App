@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.read_write_app_duan1"
-        minSdk = 29
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -33,7 +33,8 @@ android {
 }
 
 dependencies {
-    implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
+    implementation ("com.squareup.picasso:picasso:2.8")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-analytics:21.5.0")
@@ -48,6 +49,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.github.bumptech.glide:glide:4.13.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("androidx.annotation:annotation:1.2.0")
 
 
 

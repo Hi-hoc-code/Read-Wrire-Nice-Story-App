@@ -13,19 +13,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
+import com.example.read_write_app_duan1.models.Book;
 import com.example.read_write_app_duan1.models.LibraryRead;
-import com.example.read_write_app_duan1.models.Type;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.ReadLibraryViewHolder> {
 
     Context context;
-    ArrayList<LibraryRead> mListLibraryRead;
+    List<Book> mListLibraryRead;
 
-    public ReadLibraryAdapter(Context context, ArrayList<LibraryRead> mListLibraryRead) {
+    public ReadLibraryAdapter(Context context, List<Book> mListLibraryRead) {
         this.context = context;
         this.mListLibraryRead = mListLibraryRead;
     }
@@ -39,7 +39,7 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ReadLibraryViewHolder holder, int position) {
-        LibraryRead libraryRead = mListLibraryRead.get(position);
+        Book libraryRead = mListLibraryRead.get(position);
         if (libraryRead == null) {
             return;
         }
@@ -47,6 +47,7 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
 
         holder.tvNameReadLibrary.setText(libraryRead.getName());
         holder.tvTypeReadLibrary.setText(libraryRead.getType());
+        holder.description.setText(libraryRead.getDiscription());
         Picasso.get().load(libraryRead.getImage()).into(holder.imgStoryReadLibrary);
 
 
@@ -62,12 +63,16 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
         }
         return 0;
     }
+    // Trong ReadLibraryAdapter
+
+
+
 
     public class ReadLibraryViewHolder extends RecyclerView.ViewHolder {
 
 
         private ImageView imgStoryReadLibrary, imgDeleteRead;
-        private TextView tvNameReadLibrary, tvTypeReadLibrary;
+        private TextView tvNameReadLibrary, tvTypeReadLibrary, description;
 
         public ReadLibraryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +81,7 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
             imgDeleteRead = itemView.findViewById(R.id.imgDeleteRead);
             tvNameReadLibrary = itemView.findViewById(R.id.tvNameReadLibrary);
             tvTypeReadLibrary = itemView.findViewById(R.id.tvTypeReadLibrary);
+            description = itemView.findViewById(R.id.decriptionReadLibrary);
 
             imgDeleteRead.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,6 +100,7 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
 
 
         }
+
     }
     private void showDeleteDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -123,6 +130,7 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 
 }

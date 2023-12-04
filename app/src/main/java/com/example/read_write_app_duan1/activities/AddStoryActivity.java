@@ -37,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class AddStoryActivity extends AppCompatActivity {
     private ImageView imgPrev, imgAddCover, imgUpload;
     private EditText edtTitle, edtDescrice;
     private ProgressBar progressBar;
+    Uri imageUri ;
 
     private FirebaseAuth firebaseAuth;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("image");
@@ -84,11 +86,7 @@ public class AddStoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 validateData();
-                if (pdfUri != null){
-                    uploadToFirebase(pdfUri);
-                }else {
-                    Toast.makeText(AddStoryActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
-                }
+                finish();
             }
         });
 
@@ -112,58 +110,81 @@ public class AddStoryActivity extends AppCompatActivity {
         imgAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage();
+               uploadImage();
             }
         });
     }
 
     private void uploadToFirebase(Uri uri){
-
         StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(uri));
-        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        fileRef.putFile(uri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(Uri uri) {
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Lấy đường dẫn của ảnh sau khi tải lên thành công
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Lưu đường dẫn của ảnh vào Realtime Database hoặc thực hiện các thao tác khác tùy ý
+                                String imageUrl = uri.toString();
+                                // Ví dụ: Lưu đường dẫn vào Realtime Database
+                                saveImageUrlToDatabase(imageUrl);
 
-                        Book book = new Book( uri.toString());
-                        String bookId = root.push().getKey();
-                        root.child(bookId).setValue(book);
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(AddStoryActivity.this, "Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                imgAddCover.setImageResource(R.drawable.addcover);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.INVISIBLE);
-
-                        Toast.makeText(AddStoryActivity.this, "Uploaded Successfully", Toast.LENGTH_SHORT).show();
-
-                        imgAddCover.setImageResource(R.drawable.addcover);
+                        Toast.makeText(AddStoryActivity.this, "Uploading Failed !", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(AddStoryActivity.this, "Uploading Failed !", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
+    private void saveImageUrlToDatabase(String imageUrl) {
+        // Thực hiện lưu đường dẫn của ảnh vào Realtime Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Book").child("image");
+        String imageId = databaseRef.push().getKey(); // Tạo một ID duy nhất cho ảnh
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("imageId", imageId);
+        hashMap.put("imageUrl", imageUrl);
+
+        // Lưu đường dẫn của ảnh vào Realtime Database
+        databaseRef.child(imageId).setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Xử lý khi lưu thành công, nếu cần
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Xử lý khi lưu thất bại, nếu cần
+                    }
+                });
+    }
+
+
     private String getFileExtension(Uri uri){
         ContentResolver cr = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
     }
     private void uploadImage() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        startActivityForResult(intent,2);
+        startActivityForResult(intent, 2);
+
     }
 
-    private String title = "", description = "", category = "";
+    private String title = "", description = "", category = "", image="";
     private void validateData(){
         //Step 1: Validate data
         Log.d(TAG, "validateDate: validating data...");
@@ -174,25 +195,30 @@ public class AddStoryActivity extends AppCompatActivity {
         category = categoryTv.getText().toString().trim();
 
         //validate data
-        if (TextUtils.isEmpty(title)){
+
+        if (TextUtils.isEmpty(title)) {
             Toast.makeText(this, "Enter Title...", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(description)){
+        } else if (TextUtils.isEmpty(description)) {
             Toast.makeText(this, "Enter Description...", Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(description)){
+        } else if (TextUtils.isEmpty(category)) {
             Toast.makeText(this, "Enter Category...", Toast.LENGTH_SHORT).show();
-        }
-        else if (pdfUri ==null){
+        } else if (pdfUri == null) {
             Toast.makeText(this, "Pick Pdf...", Toast.LENGTH_SHORT).show();
+        } else if (imageUri == null) {
+            Toast.makeText(this, "Select Image...", Toast.LENGTH_SHORT).show();
         }
+//        if (pdfUri != null){
+//            uploadToFirebase(pdfUri);
+//        }else {
+//            Toast.makeText(AddStoryActivity.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+//        }
         else {
-            //all data is valid, can upload now
-            uploadPdfToStorage();
+            // All data is valid, có thể upload bây giờ
+            uploadPdfToStorage(pdfUri);
         }
     }
 
-    private void uploadPdfToStorage() {
+    private void uploadPdfToStorage(Uri uri) {
         //Step 2: Upload Pdf to firebase storage
         Log.d(TAG, "uploadPdfToStorage: uploading to storage...");
 
@@ -204,7 +230,7 @@ public class AddStoryActivity extends AppCompatActivity {
         long timestamp = System.currentTimeMillis();
 
         //path of pdf in firebase storage
-        String filePathAndName = "Books/" +timestamp;
+        String filePathAndName = "Book/" +timestamp;
         //storage reference
         StorageReference storageReference = FirebaseStorage.getInstance().getReference(filePathAndName);
         storageReference.putFile(pdfUri)
@@ -245,10 +271,11 @@ public class AddStoryActivity extends AppCompatActivity {
         HashMap<String, String > hashMap = new HashMap<>();
         hashMap.put("uid", ""+uid);
         hashMap.put("idBook", ""+timestamp);
-        hashMap.put("title", ""+title);
+        hashMap.put("name", ""+title);
         hashMap.put("description", ""+description);
         hashMap.put("type", ""+category);
-        hashMap.put("url", ""+uploadedPdfUrl);
+        hashMap.put("content", ""+uploadedPdfUrl);
+        hashMap.put("image", "");
 //        hashMap.put("timestamp", String.valueOf(timestamp));
 
         //db reference: BD > Books
@@ -276,13 +303,12 @@ public class AddStoryActivity extends AppCompatActivity {
 
 
     private void pdfPickIntent(){
-        Log.d(TAG, "pdfPickIntent: starting pdf pick intent");
-
         Intent intent = new Intent();
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         startActivityForResult(Intent.createChooser(intent, "Select Pdf"), PDF_PICK_CODE);
     }
+
 
     private void categoryPickDiaLog(){
         Log.d(TAG, "categoryPickDialog: showing category pick dialog");
@@ -342,25 +368,10 @@ public class AddStoryActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==2 && resultCode == RESULT_OK && data != null){
-            if (requestCode == PDF_PICK_CODE){
-                Log.d(TAG, "onActivityResult: PDF Picked");
 
-                pdfUri = data.getData();
-                imgAddCover.setImageURI(pdfUri);
-
-                Log.d(TAG,"onActivityResult: URI: "+pdfUri);
-            }
-        }else {
-            Log.d(TAG, "onActivityResult: cancelled picking pdf");
-            Toast.makeText(this, "cancelled picking pdf", Toast.LENGTH_SHORT).show();
-        }
-
-       /* //upload Image
-        if (requestCode==2 && resultCode == RESULT_OK && data != null){
-
-        }*/
     }
+
+
 
     private void unitUi() {
         tvSkip = findViewById(R.id.tvSkip);
@@ -376,6 +387,5 @@ public class AddStoryActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait");
         progressDialog.setCanceledOnTouchOutside(false);
-
     }
 }

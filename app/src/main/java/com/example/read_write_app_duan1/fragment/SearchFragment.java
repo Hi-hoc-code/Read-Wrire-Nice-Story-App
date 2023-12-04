@@ -72,6 +72,7 @@ public class SearchFragment extends Fragment {
                     }
                 }
                 list.add(type);
+                //thông báo
                 adapterType.notifyDataSetChanged();
             }
 
@@ -120,6 +121,8 @@ public class SearchFragment extends Fragment {
 
          }
      });
+
+
     }
 
 }

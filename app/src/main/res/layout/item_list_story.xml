@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:id="@+id/itemliststory"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -10,8 +12,8 @@
 
         <ImageView
             android:id="@+id/imgList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:layout_marginTop="4dp"
             android:src="@drawable/anhlist"
             app:layout_constraintEnd_toEndOf="parent"
@@ -21,8 +23,8 @@
 
         <TextView
             android:id="@+id/oder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="11dp"
+            android:layout_height="18dp"
             android:layout_margin="16dp"
             android:text="1"
             android:textColor="@color/primary_color"
@@ -35,11 +37,24 @@
             app:layout_constraintTop_toTopOf="@id/imgList"
             app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="KHÚC HÁT CHIỀU TÀ"
-        />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KHÚC HÁT CHIỀU TÀ" />
+
+        <TextView
+            android:id="@+id/decriptionList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            />
+    </LinearLayout>
 </LinearLayout>
