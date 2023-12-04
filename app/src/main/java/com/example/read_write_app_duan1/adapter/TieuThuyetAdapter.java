@@ -16,27 +16,27 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class RecommendStoryAdapter extends RecyclerView.Adapter<RecommendStoryAdapter.MyViewHoler> {
+public class TieuThuyetAdapter extends RecyclerView.Adapter<TieuThuyetAdapter.MyViewHoler> {
     Context context;
     ArrayList<Book> list;
 
-    public RecommendStoryAdapter(Context context, ArrayList<Book> list) {
+    public TieuThuyetAdapter(Context context, ArrayList<Book> list) {
         this.context = context;
         this.list = list;
     }
 
     @NonNull
     @Override
-    public MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TieuThuyetAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
-        return new MyViewHoler(view);
+        return new TieuThuyetAdapter.MyViewHoler(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHoler holder, int position) {
-        Book book1 = list.get(position);
-        holder.tvNameStory.setText(book1.getName());
-        Picasso.get().load(book1.getImage()).into(holder.imgStory);
+    public void onBindViewHolder(@NonNull TieuThuyetAdapter.MyViewHoler holder, int position) {
+        Book book = list.get(position);
+        holder.tvNameStory.setText(book.getName());
+        Picasso.get().load(book.getImage()).into(holder.imgStory);
     }
 
     @Override
