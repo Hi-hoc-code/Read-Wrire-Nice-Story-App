@@ -1,6 +1,8 @@
 package com.example.read_write_app_duan1.fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +49,16 @@ public class SearchFragment extends Fragment {
     private void addEvents(View view) {
         edtSearch = view.findViewById(R.id.edtSeachType);
         rvcType  = view.findViewById(R.id.rvcType);
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), numberOfColumns);
         rvcType.setLayoutManager(gridLayoutManager);
+
         databaseReference = FirebaseDatabase.getInstance().getReference("BookType");
         mStorage = FirebaseStorage.getInstance();
         list = new ArrayList<>();
         adapterType = new TypeAdapter(getContext(),list);
         rvcType.setAdapter(adapterType);
+
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -67,6 +72,7 @@ public class SearchFragment extends Fragment {
                     }
                 }
                 list.add(type);
+                //thông báo
                 adapterType.notifyDataSetChanged();
             }
 
@@ -90,5 +96,33 @@ public class SearchFragment extends Fragment {
 
             }
         });
+
+        //edit text change listen,search
+     edtSearch.addTextChangedListener(new TextWatcher() {
+         @Override
+         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+         }
+
+         @Override
+         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            //called as and when user type each letter
+             try {
+                 adapterType.getFilter().filter(s);
+             }
+             catch (Exception e){
+
+             }
+
+         }
+
+         @Override
+         public void afterTextChanged(Editable s) {
+
+         }
+     });
+
+
     }
+
 }

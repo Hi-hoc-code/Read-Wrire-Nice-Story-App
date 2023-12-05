@@ -12,9 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.read_write_app_duan1.R;
-import com.example.read_write_app_duan1.activities.AddStoryActivity;
+//import com.example.read_write_app_duan1.activities.AddStoryActivity;
+import com.example.read_write_app_duan1.activities.AddActivityDemo;
 import com.example.read_write_app_duan1.activities.EditStoryActivity;
-import com.example.read_write_app_duan1.activities.LoginActivity;
 
 public class WriteFragment extends Fragment {
     private TextView tvEdit, tvWriteNew;
@@ -37,7 +37,7 @@ public class WriteFragment extends Fragment {
         tvWriteNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddStoryActivity.class);
+                Intent intent = new Intent(getActivity(), AddActivityDemo.class);
                 startActivity(intent);
             }
         });
