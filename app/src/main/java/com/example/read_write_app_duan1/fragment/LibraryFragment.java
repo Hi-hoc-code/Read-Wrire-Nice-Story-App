@@ -36,7 +36,10 @@ public class LibraryFragment extends Fragment {
 
         viewPager = myFragment.findViewById(R.id.viewPager);
         tabLayout = myFragment.findViewById(R.id.tabLayout);
+<<<<<<< HEAD
         linearLayout = myFragment.findViewById(R.id.linearLayout);
+=======
+>>>>>>> parent of 060be7d (Update Home ( Tối ưu adapter))
 
         return myFragment;
     }
