@@ -40,7 +40,12 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Book book = list.get(position);
         holder.tvNameStory.setText(book.getName());
-        Picasso.get().load(book.getImage()).into(holder.imgStory);
+        String imagePath = book.getImage();
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Picasso.get().load(imagePath).into(holder.imgStory);
+        } else {
+            // Handle the case when the path is empty or null
+        }
 
         holder.imgStory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +76,6 @@ public class HomeBookAdapter extends RecyclerView.Adapter<HomeBookAdapter.MyView
             super(view);
             tvNameStory = view.findViewById(R.id.tvNameStory);
             imgStory = view.findViewById(R.id.imgRecommendStory);
-
         }
     }
 }
