@@ -16,9 +16,41 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class HuongDanHocTapAdapter extends BookAdapter{
+public class HuongDanHocTapAdapter extends RecyclerView.Adapter<HuongDanHocTapAdapter.MyViewHoler> {
+    Context context;
+    ArrayList<Book> list;
 
     public HuongDanHocTapAdapter(Context context, ArrayList<Book> list) {
-        super(context, list);
+        this.context = context;
+        this.list = list;
+    }
+
+    @NonNull
+    @Override
+    public HuongDanHocTapAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
+        return new HuongDanHocTapAdapter.MyViewHoler(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull HuongDanHocTapAdapter.MyViewHoler holder, int position) {
+        Book book1 = list.get(position);
+        holder.tvNameStory.setText(book1.getName());
+        Picasso.get().load(book1.getImage()).into(holder.imgStory);
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    static class MyViewHoler extends RecyclerView.ViewHolder{
+        TextView tvNameStory;
+        ShapeableImageView imgStory;
+        public MyViewHoler(View view){
+            super(view);
+            tvNameStory = view.findViewById(R.id.tvNameStory);
+            imgStory = view.findViewById(R.id.imgRecommendStory);
+        }
     }
 }
