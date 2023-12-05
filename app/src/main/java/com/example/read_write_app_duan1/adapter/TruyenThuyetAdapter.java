@@ -16,41 +16,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TruyenThuyetAdapter  extends RecyclerView.Adapter<TruyenThuyetAdapter.MyViewHoler> {
-    Context context;
-    ArrayList<Book> list;
+public class TruyenThuyetAdapter  extends BookAdapter{
 
     public TruyenThuyetAdapter(Context context, ArrayList<Book> list) {
-        this.context = context;
-        this.list = list;
-    }
-
-    @NonNull
-    @Override
-    public TruyenThuyetAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_view_book, parent, false);
-        return new TruyenThuyetAdapter.MyViewHoler(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull TruyenThuyetAdapter.MyViewHoler holder, int position) {
-        Book book1 = list.get(position);
-        holder.tvNameStory.setText(book1.getName());
-        Picasso.get().load(book1.getImage()).into(holder.imgStory);
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    static class MyViewHoler extends RecyclerView.ViewHolder{
-        TextView tvNameStory;
-        ShapeableImageView imgStory;
-        public MyViewHoler(View view){
-            super(view);
-            tvNameStory = view.findViewById(R.id.tvNameStory);
-            imgStory = view.findViewById(R.id.imgRecommendStory);
-        }
+        super(context, list);
     }
 }
