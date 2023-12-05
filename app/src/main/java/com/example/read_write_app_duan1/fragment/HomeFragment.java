@@ -1,47 +1,13 @@
-//        rcvCoTich = view.findViewById(R.id.rcvTruyenCoTich);
-//        rcvTieuThuyet = view.findViewById(R.id.rcvTruyenThuyet);
-//        rcvTruyenThuyet = view.findViewById(R.id.rcvTruyenThuyet);
-//        rcvTinhYeu = view.findViewById(R.id.rcvTinhYeu);
-//        rcvLichSuChinhTri = view.findViewById(R.id.rcvChinhTri);
-//        rcvHuongDanHocTap = view.findViewById(R.id.rcvHuongDanHocTap);
-
-//
-//        rcvTieuThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvTruyenThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvCoTich.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvTinhYeu.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvLichSuChinhTri.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvHuongDanHocTap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-//        truyenCoTichAdapter = new LichSuAdapter(getContext(), list);
-//        tieuThuyetAdapter = new TieuThuyetAdapter(getContext(), list);
-//        truyenThuyetAadapter = new TruyenThuyetAdapter(getContext(), list);
-//        tinhYeuAdapter = new TinhYeuAdapte(getContext(), list);
-//        lichSuAdapter = new TinhYeuAdapte(getContext(), list);
-//        huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(), list);
-//
-//        rcvCoTich.setAdapter(truyenCoTichAdapter);
-//        rcvTieuThuyet.setAdapter(tieuThuyetAdapter);
-//        rcvTruyenThuyet.setAdapter(truyenThuyetAadapter);
-//        rcvTinhYeu.setAdapter(tinhYeuAdapter);
-//        rcvLichSuChinhTri.setAdapter(lichSuAdapter);
-//        rcvHuongDanHocTap.setAdapter(huongDanHocTapAdapter);
-
-//
-//        rcvReadingBook = view.findViewById(R.id.rcvReading);
-//        rcvRecommendStory = view.findViewById(R.id.rcvRecommendStory);
-//        rcvRecommendStory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        rcvReadingBook.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        readingBookAdapter = new IsReadingBookAdapter(getContext(), list);
-//        rcvReadingBook.setAdapter(readingBookAdapter);
-//        recommendStoryAdapter = new RecommendStoryAdapter(getContext(), list);
-//        rcvRecommendStory.setAdapter(recommendStoryAdapter);
 package com.example.read_write_app_duan1.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
+import com.example.read_write_app_duan1.activities.GetAllBookActivity;
 import com.example.read_write_app_duan1.adapter.HuongDanHocTapAdapter;
 import com.example.read_write_app_duan1.adapter.LichSuAdapter;
+import com.example.read_write_app_duan1.adapter.RecommendStoryAdapter;
 import com.example.read_write_app_duan1.adapter.TieuThuyetAdapter;
 import com.example.read_write_app_duan1.adapter.TinhYeuAdapter;
 import com.example.read_write_app_duan1.adapter.TruyenCoTichAdapter;
@@ -71,22 +39,28 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 
 public class HomeFragment extends Fragment {
-    DatabaseReference databaseReference;
+    DatabaseReference bookRef;
     FirebaseStorage mStorage;
-    RecyclerView rcvTieuThuyet, rcvTruyenThuyet, rcvCoTich, rcvTinhYeu, rcvHuongDanHocTap, rcvLichSuChinhTri;
+    RecyclerView rcvTieuThuyet, rcvTruyenThuyet, rcvCoTich, rcvTinhYeu, rcvHuongDanHocTap, rcvLichSuChinhTri, rcvRecomment;
     DrawerLayout drawerLayout;
     ShapeableImageView imgAvatar;
-    ArrayList<Book> listTieuThuyet,listCoTich, listTinhYeu,listTruyenThuyet,listHuongDanHocTap, listLichSuVaChinhTri ;
+    ArrayList<Book> listTieuThuyet, listCoTich, listTinhYeu, listTruyenThuyet, listHuongDanHocTap, listLichSuVaChinhTri, listRecomment, randomBookList;
     TieuThuyetAdapter tieuThuyetAdapter;
     HuongDanHocTapAdapter huongDanHocTapAdapter;
     TruyenCoTichAdapter truyenCoTichAdapter;
     TinhYeuAdapter tinhYeuAdapter;
     LichSuAdapter lichSuAdapter;
     TruyenThuyetAdapter truyenThuyetAdapter;
-
+    RecommendStoryAdapter recommendStoryAdapter;
+    Handler handler;
+    Random random;
+    Integer interval = 30*1000;
+    Button btnGetAllBook;
 
     @Nullable
     @Override
@@ -97,44 +71,57 @@ public class HomeFragment extends Fragment {
     }
 
     private void addEvents(View view) {
-        loadDataForCategory("Hướng dẫn học tập");
-        loadDataForCategory("Tiểu thuyết");
-        loadDataForCategory("Truyền thuyết");
-        loadDataForCategory("Tình yêu");
-        loadDataForCategory("Lịch sử và chính trị");
-        loadDataForCategory("Truyện cổ tích");
-        imgAvatar  = view.findViewById(R.id.imgAvatar);
+        btnGetAllBook = view.findViewById(R.id.btnGetAllBook);
+        loadDataForCategory("Hướng dẫn học tập", bookRef);
+        loadDataForCategory("Tiểu thuyết", bookRef);
+        loadDataForCategory("Truyền thuyết", bookRef);
+        loadDataForCategory("Tình yêu", bookRef);
+        loadDataForCategory("Lịch sử và chính trị", bookRef);
+        loadDataForCategory("Truyện cổ tích", bookRef);
+        imgAvatar = view.findViewById(R.id.imgAvatar);
         drawerLayout = view.findViewById(R.id.drawerLayout);
+
+        btnGetAllBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), GetAllBookActivity.class));
+            }
+        });
+
+        bookRef = FirebaseDatabase.getInstance().getReference("Book");
         // Click imgAvatar open/ close drawer navigation
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
-                }else{
+                } else {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
             }
         });
         // RecycleView book-> type
         //init rcv
+        rcvRecomment = view.findViewById(R.id.rcvRecommendStory);
+        rcvRecomment.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
         rcvTieuThuyet = view.findViewById(R.id.rcvTieuThuyet);
-        rcvTieuThuyet.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvTieuThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         rcvTruyenThuyet = view.findViewById(R.id.rcvTruyenThuyet);
-        rcvTruyenThuyet.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvTruyenThuyet.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        rcvCoTich= view.findViewById(R.id.rcvTruyenCoTich);
-        rcvCoTich.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvCoTich = view.findViewById(R.id.rcvTruyenCoTich);
+        rcvCoTich.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         rcvTinhYeu = view.findViewById(R.id.rcvTinhYeu);
-        rcvTinhYeu.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvTinhYeu.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         rcvHuongDanHocTap = view.findViewById(R.id.rcvHuongDanHocTap);
-        rcvHuongDanHocTap.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvHuongDanHocTap.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         rcvLichSuChinhTri = view.findViewById(R.id.rcvChinhTri);
-        rcvLichSuChinhTri.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rcvLichSuChinhTri.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         //Create Array for every rcv
         listTieuThuyet = new ArrayList<>();
@@ -143,6 +130,7 @@ public class HomeFragment extends Fragment {
         listTinhYeu = new ArrayList<>();
         listHuongDanHocTap = new ArrayList<>();
         listLichSuVaChinhTri = new ArrayList<>();
+        listRecomment = new ArrayList<>();
 
         //Adapter
 
@@ -161,40 +149,118 @@ public class HomeFragment extends Fragment {
         huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(), listHuongDanHocTap);
         rcvHuongDanHocTap.setAdapter(huongDanHocTapAdapter);
 
-        lichSuAdapter = new LichSuAdapter(getContext(),listLichSuVaChinhTri);
+        lichSuAdapter = new LichSuAdapter(getContext(), listLichSuVaChinhTri);
         rcvLichSuChinhTri.setAdapter(lichSuAdapter);
 
-        // get data from firebase fill into rcv
+        recommendStoryAdapter = new RecommendStoryAdapter(getContext(), listRecomment);
+        rcvRecomment.setAdapter(recommendStoryAdapter);
 
+//            Data recomment book random 5 book every 60s
+
+        loadDataForRecommentBook(bookRef, listRecomment, recommendStoryAdapter);
     }
-    private void loadDataForCategory(String category){
-        DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference().child("Book");
-        booksRef.orderByChild("type").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
+
+    private void loadDataForRecommentBook(DatabaseReference bookRef, ArrayList<Book> listRecomment, RecommendStoryAdapter recommendStoryAdapter) {
+        bookRef = FirebaseDatabase.getInstance().getReference("Book");
+        bookRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listRecomment.clear();
+                try {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String name = dataSnapshot.child("name").getValue(String.class);
+                        String image = dataSnapshot.child("image").getValue(String.class);
+                        listRecomment.add(new Book(name, image));
+
+
+                        randomBookList= new ArrayList<>();
+                        random = new Random();
+                        handler=new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateRandomBook();
+                                handler.postDelayed(this,interval);
+                            }
+                        }, interval);
+                        recommendStoryAdapter.notifyDataSetChanged();
+
+                    }
+                } catch (Exception ex) {
+                    Log.d("TAG", "onDataChange: ", ex);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        randomBookList= new ArrayList<>();
+        random = new Random();
+        handler=new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateRandomBook();
+                handler.postDelayed(this,interval);
+            }
+        }, interval);
+    }
+    private void updateRandomBook() {
+        if (listRecomment.size() > 0) {
+            randomBookList.clear();
+            int maxIndex = listRecomment.size();
+            if (maxIndex > 5) {
+                ArrayList<Integer> index = new ArrayList<>();
+                for (int i = 0; i < maxIndex; i++) {
+                    index.add(i);
+                }
+                Collections.shuffle(index);
+                for (int i = 0; i < 5; i++) {
+                    int randomIndex = index.get(i);
+                    randomBookList.add(listRecomment.get(randomIndex));
+                }
+            } else {
+                randomBookList.addAll(listRecomment);
+            }
+
+            // Update listRecomment with randomBookList
+            listRecomment.clear();
+            listRecomment.addAll(randomBookList);
+            // Notify the adapter that data has changed
+            recommendStoryAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void loadDataForCategory(String category, DatabaseReference bookRef) {
+        bookRef = FirebaseDatabase.getInstance().getReference("Book");
+        bookRef.orderByChild("type").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 switch (category) {
-                    case "Hướng dẫn học tập" :{
+                    case "Hướng dẫn học tập": {
                         handleDataForRecyclerView(dataSnapshot, listHuongDanHocTap, huongDanHocTapAdapter);
                         break;
                     }
-                    case "Tiểu thuyết":{
+                    case "Tiểu thuyết": {
                         handleDataForRecyclerView(dataSnapshot, listTieuThuyet, tieuThuyetAdapter);
                         break;
                     }
-                    case "Truyền thuyết":{
+                    case "Truyền thuyết": {
                         handleDataForRecyclerView(dataSnapshot, listTruyenThuyet, truyenThuyetAdapter);
                         break;
                     }
-                    case "Tình yêu":{
+                    case "Tình yêu": {
                         handleDataForRecyclerView(dataSnapshot, listTinhYeu, tinhYeuAdapter);
                         break;
                     }
-                    case "Lịch sử và chính trị" :{
-                        handleDataForRecyclerView(dataSnapshot,listLichSuVaChinhTri, lichSuAdapter);
+                    case "Lịch sử và chính trị": {
+                        handleDataForRecyclerView(dataSnapshot, listLichSuVaChinhTri, lichSuAdapter);
                         break;
                     }
-                    case "Truyện cổ tích":{
-                        handleDataForRecyclerView(dataSnapshot, listCoTich,truyenCoTichAdapter);
+                    case "Truyện cổ tích": {
+                        handleDataForRecyclerView(dataSnapshot, listCoTich, truyenCoTichAdapter);
                         break;
                     }
                     // Thêm các case khác tương ứng với từng thể loại sách và RecyclerView
@@ -203,21 +269,26 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(),"Lỗi rồi ba ơi",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Lỗi rồi ba ơi", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     private void handleDataForRecyclerView(DataSnapshot dataSnapshot, ArrayList<Book> bookList, RecyclerView.Adapter adapter) {
-        bookList.clear();
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Book book = snapshot.getValue(Book.class);
-            if (book != null) {
-                String name = book.getName();
-                String image = book.getImage();
-                bookList.add(new Book(name, image));
+        try {
+            bookList.clear();
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                String name = snapshot.child("name").getValue(String.class);
+                String image = snapshot.child("image").getValue(String.class);
+                if (name != null && image != null) {
+                    Book book = new Book(name, image);
+                    bookList.add(book);
+                }
             }
+            adapter.notifyDataSetChanged(); // Cập nhật RecyclerView sau khi thêm dữ liệu
+        } catch (Exception ex) {
+            Log.d("lỗi", "Quá lỗi", ex);
         }
-        adapter.notifyDataSetChanged(); // Cập nhật RecyclerView sau khi thêm dữ liệu
     }
 }
 

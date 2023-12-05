@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.example.read_write_app_duan1.R;
 
-public class PostActivity extends AppCompatActivity {
+public class GetAllBookActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_get_all_book);
     }
 }

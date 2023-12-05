@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:gravity="start"
-                        android:text="# Mảnh thơ trong thành phố"
+                        android:text="# Thả hồn và thế giới sách- truyện hay"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -83,18 +83,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="4 Chương"
+                        android:text="Nội dung hấp dẫn"
                         android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Ánh thơ nhỏ một ngày tàn nắng Tô lên hồn ai mảnh trăng thơ"
+                        android:text="Mang lại những kiến thức, nâng cao tầm hiểu biết, thu đẩy tư duy"
                         android:textAlignment="textStart"
                         android:textStyle="bold" />
 
                     <Button
+                        android:id="@+id/btnGetAllBook"
                         android:layout_width="150dp"
                         android:layout_height="40dp"
                         android:layout_gravity="end"
