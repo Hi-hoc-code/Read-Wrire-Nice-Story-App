@@ -2,6 +2,7 @@ package com.example.read_write_app_duan1.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +40,7 @@ public class ReadBookActivity extends AppCompatActivity {
     TextView TitleBook, descriptionRead, NameUser, comment, readBook, addFavorite;
     Context context;
     public ArrayList<Book> list;
-    String bookName = null;
+    public String bookName = "name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,7 @@ public class ReadBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(ReadBookActivity.this, SearchFragment.class));
+                onBackPressed();
 
             }
         });
@@ -137,10 +138,22 @@ public class ReadBookActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Chuyển đến ReadPdfActivity
 
-// Code trong ReadBookActivity khi muốn chuyển tên sách sang ReadPdfActivity
+                // Code trong ReadBookActivity khi muốn chuyển tên sách sang ReadPdfActivity
 
                 Intent intent = new Intent(ReadBookActivity.this, ReadPdfActivity.class);
                 intent.putExtra("name", bookName);
+
+                ReadLibraryFragment fragment = new ReadLibraryFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("name", bookName);
+                fragment.setArguments(bundle);
+
+// Thêm fragment vào LinearLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.linearLayout, fragment) // Thay your_linear_layout_id bằng ID của LinearLayout trong layout của bạn
+                        .commit();
+
+
                 startActivity(intent);
 
 

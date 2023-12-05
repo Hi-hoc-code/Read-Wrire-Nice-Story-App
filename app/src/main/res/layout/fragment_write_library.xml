@@ -33,59 +33,13 @@
             />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleViewWrite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/imgStoryWriteLibrary"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/story2"
-            />
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            >
-            <TextView
-                android:id="@+id/tvNameWriteLibrary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CẬU BÉ PHI HÀNH GIA"
-                android:textSize="20sp"
-                android:textAllCaps="true"
-                android:layout_marginTop="10dp"
-                />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
 
+        >
 
-            <TextView
-                android:id="@+id/tvProgressLibrary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text= "Chưa hoàn thành"
-                android:textSize="20sp"
-                android:layout_marginTop="15dp"
-                />
-
-            <ImageView
-                android:id="@+id/imgDeletedWrite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/delete"
-                ></ImageView>
-        </LinearLayout>
-    </LinearLayout>
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recycleViewWrite"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="30dp"-->
-<!--        >-->
-
-<!--    </androidx.recyclerview.widget.RecyclerView>-->
+    </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

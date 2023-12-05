@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +22,7 @@ public class LibraryFragment extends Fragment {
     ViewPager viewPager;
     TabLayout tabLayout;
 
-    FrameLayout frameLayout;
+    LinearLayout linearLayout;
 
     public LibraryFragment(){}
 
@@ -35,6 +36,7 @@ public class LibraryFragment extends Fragment {
 
         viewPager = myFragment.findViewById(R.id.viewPager);
         tabLayout = myFragment.findViewById(R.id.tabLayout);
+        linearLayout = myFragment.findViewById(R.id.linearLayout);
 
         return myFragment;
     }

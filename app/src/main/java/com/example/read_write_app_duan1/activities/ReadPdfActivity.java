@@ -63,8 +63,7 @@ public class ReadPdfActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
-            }
+finish();            }
         });
 
 

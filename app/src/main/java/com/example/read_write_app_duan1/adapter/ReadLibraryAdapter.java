@@ -17,6 +17,7 @@ import com.example.read_write_app_duan1.models.Book;
 import com.example.read_write_app_duan1.models.LibraryRead;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,7 +44,6 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
         if (libraryRead == null) {
             return;
         }
-
 
         holder.tvNameReadLibrary.setText(libraryRead.getName());
         holder.tvTypeReadLibrary.setText(libraryRead.getType());
@@ -90,14 +90,6 @@ public class ReadLibraryAdapter extends RecyclerView.Adapter<ReadLibraryAdapter.
                     showDeleteDialog(getAdapterPosition());
                 }
             });
-
-            imgStoryReadLibrary.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
 
         }
 

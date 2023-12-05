@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/frameLinear"
     tools:context=".fragment.ReadLibraryFragment"
     android:orientation="vertical">
 
@@ -35,11 +36,13 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
+        android:id="@+id/recycleViewRead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         >
 
     </androidx.recyclerview.widget.RecyclerView>
+
+
 </LinearLayout>
