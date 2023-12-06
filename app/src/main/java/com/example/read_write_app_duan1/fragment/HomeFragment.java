@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +62,7 @@ public class HomeFragment extends Fragment {
     Random random;
     Integer interval = 30*1000;
     Button btnGetAllBook;
+    FragmentManager fragmentManager;
 
     @Nullable
     @Override
@@ -71,6 +73,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void addEvents(View view) {
+        fragmentManager = getParentFragmentManager();
         btnGetAllBook = view.findViewById(R.id.btnGetAllBook);
         loadDataForCategory("Hướng dẫn học tập", bookRef);
         loadDataForCategory("Tiểu thuyết", bookRef);
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment {
         loadDataForCategory("Truyện cổ tích", bookRef);
         imgAvatar = view.findViewById(R.id.imgAvatar);
         drawerLayout = view.findViewById(R.id.drawerLayout);
+        fragmentManager = getParentFragmentManager();
 
         btnGetAllBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,25 +138,25 @@ public class HomeFragment extends Fragment {
 
         //Adapter
 
-        tieuThuyetAdapter = new TieuThuyetAdapter(getContext(), listTieuThuyet);
+        tieuThuyetAdapter = new TieuThuyetAdapter(getContext(), listTieuThuyet, fragmentManager);
         rcvTieuThuyet.setAdapter(tieuThuyetAdapter);
 
-        truyenThuyetAdapter = new TruyenThuyetAdapter(getContext(), listTruyenThuyet);
+        truyenThuyetAdapter = new TruyenThuyetAdapter(getContext(), listTruyenThuyet, fragmentManager);
         rcvTruyenThuyet.setAdapter(truyenThuyetAdapter);
 
-        truyenCoTichAdapter = new TruyenCoTichAdapter(getContext(), listCoTich);
+        truyenCoTichAdapter = new TruyenCoTichAdapter(getContext(), listCoTich, fragmentManager);
         rcvCoTich.setAdapter(truyenCoTichAdapter);
 
-        tinhYeuAdapter = new TinhYeuAdapter(getContext(), listTinhYeu);
+        tinhYeuAdapter = new TinhYeuAdapter(getContext(), listTinhYeu, fragmentManager);
         rcvTinhYeu.setAdapter(tinhYeuAdapter);
 
-        huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(), listHuongDanHocTap);
+        huongDanHocTapAdapter = new HuongDanHocTapAdapter(getContext(), listHuongDanHocTap, fragmentManager);
         rcvHuongDanHocTap.setAdapter(huongDanHocTapAdapter);
 
-        lichSuAdapter = new LichSuAdapter(getContext(), listLichSuVaChinhTri);
+        lichSuAdapter = new LichSuAdapter(getContext(), listLichSuVaChinhTri,fragmentManager);
         rcvLichSuChinhTri.setAdapter(lichSuAdapter);
 
-        recommendStoryAdapter = new RecommendStoryAdapter(getContext(), listRecomment);
+        recommendStoryAdapter = new RecommendStoryAdapter(getContext(), listRecomment,fragmentManager);
         rcvRecomment.setAdapter(recommendStoryAdapter);
 
 //            Data recomment book random 5 book every 60s
@@ -162,39 +166,79 @@ public class HomeFragment extends Fragment {
 
     private void loadDataForRecommentBook(DatabaseReference bookRef, ArrayList<Book> listRecomment, RecommendStoryAdapter recommendStoryAdapter) {
         bookRef = FirebaseDatabase.getInstance().getReference("Book");
-        bookRef.addValueEventListener(new ValueEventListener() {
+        bookRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listRecomment.clear();
-                try {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        String name = dataSnapshot.child("name").getValue(String.class);
-                        String image = dataSnapshot.child("image").getValue(String.class);
-                        listRecomment.add(new Book(name, image));
-
-
-                        randomBookList= new ArrayList<>();
-                        random = new Random();
-                        handler=new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateRandomBook();
-                                handler.postDelayed(this,interval);
-                            }
-                        }, interval);
-                        recommendStoryAdapter.notifyDataSetChanged();
-
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Book book = new Book();
+                Object data = snapshot.getValue();
+                if (data != null) {
+                    if (data instanceof Map) {
+                        Map<String, Object> mapData = (Map<String, Object>) data;
+                        book.setName(String.valueOf(mapData.get("name")));
+                        book.setImage(String.valueOf(mapData.get("image")));
+                        book.setId(String.valueOf(mapData.get("idBook")));
+                        // Set other book properties accordingly
                     }
-                } catch (Exception ex) {
-                    Log.d("TAG", "onDataChange: ", ex);
                 }
+                listRecomment.add(book);
+                recommendStoryAdapter.notifyDataSetChanged();
             }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+//        bookRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                listRecomment.clear();
+//                try {
+//                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                        String name = dataSnapshot.child("name").getValue(String.class);
+//                        String image = dataSnapshot.child("image").getValue(String.class);
+//                        String IdBook = dataSnapshot.child("id").getValue(String.class);
+//
+//                        listRecomment.add(new Book(name, image, IdBook));
+//
+//
+//                        randomBookList= new ArrayList<>();
+//                        random = new Random();
+//                        handler=new Handler();
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateRandomBook();
+//                                handler.postDelayed(this,interval);
+//                            }
+//                        }, interval);
+//                        recommendStoryAdapter.notifyDataSetChanged();
+//
+//                    }
+//                } catch (Exception ex) {
+//                    Log.d("TAG", "onDataChange: ", ex);
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         randomBookList= new ArrayList<>();
         random = new Random();
         handler=new Handler();

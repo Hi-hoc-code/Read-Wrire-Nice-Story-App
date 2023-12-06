@@ -2,6 +2,7 @@ package com.example.read_write_app_duan1.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +33,7 @@ public class GetAllBookActivity extends AppCompatActivity {
     DatabaseReference bookRef;
     EditText edtSearch;
     ImageView imgBack;
-
+    FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,13 +46,18 @@ public class GetAllBookActivity extends AppCompatActivity {
         bookRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listGetAll.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    String image = dataSnapshot.child("image").getValue(String.class);
-                    listGetAll.add(new Book(name, image));
+                try {
+                    listGetAll.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String name = dataSnapshot.child("name").getValue(String.class);
+                        String image = dataSnapshot.child("image").getValue(String.class);
+                        listGetAll.add(new Book(name, image));
+                    }
+                    getAllAdapter.notifyDataSetChanged();
+
+                } catch (Exception ex) {
+                    Log.d("TAG", "onDataChange: ", ex);
                 }
-                getAllAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -103,7 +110,7 @@ public class GetAllBookActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rcvGetAllBook.setLayoutManager(gridLayoutManager);
         listGetAll = new ArrayList<>();
-        getAllAdapter = new GetAllAdapter(this, listGetAll);
+        getAllAdapter = new GetAllAdapter(this, listGetAll,fragmentManager);
         bookRef = FirebaseDatabase.getInstance().getReference("Book");
 
         edtSearch = findViewById(R.id.edtSearch);
