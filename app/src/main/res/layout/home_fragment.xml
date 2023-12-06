@@ -103,6 +103,11 @@
                         android:backgroundTint="#000"
                         android:text="Bắt đầu đọc"
                         android:textSize="12sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcvReading"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
@@ -123,10 +128,7 @@
                         android:text="Truyện bạn đang đọc"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcvReading"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView

@@ -51,7 +51,7 @@ public class ReadPdfActivity extends AppCompatActivity {
         //get nameBook from intent that we passed in intent
         Intent intent = getIntent();
         if (intent != null) {
-             bookName = intent.getStringExtra("name");
+            bookName = intent.getStringExtra("name");
             Log.d(TAG, "onCreate: BookName: " + bookName);
         }
 
@@ -63,7 +63,8 @@ public class ReadPdfActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-finish();            }
+                finish();
+            }
         });
 
 
@@ -102,47 +103,47 @@ finish();            }
         });
     }
 
-        private void loadBookFromUrl(String pdfUrl) {
-        Log.d(TAG,"loadBookFromUrl: Get PDF from storage");
+    private void loadBookFromUrl(String pdfUrl) {
+        Log.d(TAG, "loadBookFromUrl: Get PDF from storage");
         StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
         reference.getBytes(Constants.MAX_BYTES_PDF)
-        .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                //LOAD PDF USING BYTES
-                pdfView.fromBytes(bytes)
-                        .swipeHorizontal(false) //set false to scroll vertical, set true to swipe horizontal
-                        .onPageChange(new OnPageChangeListener() {
-                            @Override
-                            public void onPageChanged(int page, int pageCount) {
-                                //et current and total pages in toolbar subtitle
-                                int currentPage = (page + 1);// do + 1  because page starts from 0
-                                toolbarSubtitleTv.setText(currentPage + "/"+pageCount);
-                                Log.d(TAG, "onPageChanged: "+currentPage + "/" +pageCount);
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //LOAD PDF USING BYTES
+                        pdfView.fromBytes(bytes)
+                                .swipeHorizontal(false) //set false to scroll vertical, set true to swipe horizontal
+                                .onPageChange(new OnPageChangeListener() {
+                                    @Override
+                                    public void onPageChanged(int page, int pageCount) {
+                                        //et current and total pages in toolbar subtitle
+                                        int currentPage = (page + 1);// do + 1  because page starts from 0
+                                        toolbarSubtitleTv.setText(currentPage + "/" + pageCount);
+                                        Log.d(TAG, "onPageChanged: " + currentPage + "/" + pageCount);
 
-                            }
-                        })
-                        .onError(new OnErrorListener() {
-                            @Override
-                            public void onError(Throwable t) {
-                                Toast.makeText(ReadPdfActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .onPageError(new OnPageErrorListener() {
-                            @Override
-                            public void onPageError(int page, Throwable t) {
-                                Log.d(TAG, "onPageError: "+t.getMessage());
-                                Toast.makeText(ReadPdfActivity.this, "Error n page "+page+ " "+t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .load();
+                                    }
+                                })
+                                .onError(new OnErrorListener() {
+                                    @Override
+                                    public void onError(Throwable t) {
+                                        Toast.makeText(ReadPdfActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .onPageError(new OnPageErrorListener() {
+                                    @Override
+                                    public void onPageError(int page, Throwable t) {
+                                        Log.d(TAG, "onPageError: " + t.getMessage());
+                                        Toast.makeText(ReadPdfActivity.this, "Error n page " + page + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .load();
 
-                progressBar.setVisibility(View.GONE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: "+e.getMessage());
+                        Log.d(TAG, "onFailure: " + e.getMessage());
                         //failed to load book
                         progressBar.setVisibility(View.GONE);
                     }
