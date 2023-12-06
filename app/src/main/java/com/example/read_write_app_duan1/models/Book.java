@@ -10,8 +10,26 @@ public class Book {
     private String type;
     private String comment;
     private String image;
+    private String content;
+    private String write;
 
-    public Book(String id, String name, String author, String discription, String chapter, String status, String type, String comment, String image) {
+    public String getWrite() {
+        return write;
+    }
+
+    public void setWrite(String write) {
+        this.write = write;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Book(String id, String name, String author, String discription, String chapter, String status, String type) {
         this.id = id;
         this.name = name;
         this.author = author;
@@ -23,15 +41,26 @@ public class Book {
         this.image = image;
     }
 
-    public Book(String id, String name, String image) {
+    public Book(String id, String name, String image, String pdfUrl, String category, int checkBook, int status) {
         this.id = id;
         this.name = name;
         this.image = image;
     }
 
-    public Book(String name, String image) {
+    public Book(String name) {
         this.name = name;
         this.image = image;
+    }
+    public Book(String content,String image) {
+        this.content = content;
+        this.image = image;
+    }
+    public Book(String name, String type, String discription, String content, String image) {
+        this.name = name;
+        this.image = image;
+        this.type = type;
+        this.discription = discription;
+        this.content = content;
     }
 
     public Book() {
