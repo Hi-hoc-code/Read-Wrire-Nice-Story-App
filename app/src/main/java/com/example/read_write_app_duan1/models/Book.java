@@ -51,6 +51,7 @@ public class Book {
         this.name = name;
         this.image = image;
     }
+
     public Book(String content,String image) {
         this.content = content;
         this.image = image;
@@ -61,6 +62,12 @@ public class Book {
         this.type = type;
         this.discription = discription;
         this.content = content;
+
+    public Book(String name, String image, String id) {
+        this.name = name;
+        this.image = image;
+        this.id = id;
+
     }
 
     public Book() {
