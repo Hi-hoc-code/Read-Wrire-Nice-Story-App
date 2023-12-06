@@ -63,6 +63,11 @@ public class HomeFragment extends Fragment{
                         book.setName(String.valueOf(mapData.get("name")));
                         book.setImage(String.valueOf(mapData.get("image")));
                         book.setId(String.valueOf(mapData.get("idBook")));
+                        String chapterContent= "";
+                        if(snapshot.child("chapter").child("chapter1").exists()){
+                            chapterContent = snapshot.child("chapter").child("chapter1").child("content").getValue(String.class);
+                        }
+                        book.setChapter(chapterContent);
                         // Set other book properties accordingly
                     }
                 }

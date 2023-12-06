@@ -18,9 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
-import com.example.read_write_app_duan1.fragment.CommentFragment;
 import com.example.read_write_app_duan1.models.Comment;
-import com.example.read_write_app_duan1.models.Users;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,8 +36,7 @@ import java.util.Map;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     private ArrayList<Comment> listComment;
     private Context context;
-    private DatabaseReference mAuthor;
-    private DatabaseReference mComment;
+    private DatabaseReference mDatabase;
     private String idBook;
     private String author;
 
@@ -61,30 +58,57 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Comment comment = listComment.get(position);
         holder.tvUsernameComment.setText(comment.getAuthor());
         holder.tvComment.setText(comment.getText());
+        mDatabase = FirebaseDatabase.getInstance().getReference("user");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid().toString();
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Comment comment = snapshot.getValue(Comment.class);
+                author = comment.getAuthor().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         holder.tvReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 holder.edtComment.setFocusableInTouchMode(true);
                 holder.edtComment.requestFocus();
                 InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(holder.edtComment, InputMethodManager.SHOW_IMPLICIT);
+                holder.btnComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String text = holder.edtComment.getText().toString();
+                        writeNewPost(uid, author, text);
+                        holder.edtComment.getText().clear();
+                    }
+                });
             }
         });
+
+//        Picasso.get().load(comment.getImage()).into(holder.shapeableImageView);
     }
 
     @Override
     public int getItemCount() {
         return listComment.size();
     }
-    private void writeNewComment(String author, String text, String uid) {
-        String key = mComment.push().getKey();
-        Comment comment = new Comment(author, text, uid);
+    private void writeNewPost(String uid, String name, String text) {
+        String key = mDatabase.child("comments").push().getKey();
+        Comment comment = new Comment(uid, name, text);
         Map<String, Object> commentValues = comment.toMap();
+
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(key, commentValues);
-        mComment.updateChildren(childUpdates);
+        childUpdates.put("/comments/" + key, commentValues);
+        childUpdates.put("/user-comments/" + uid + "/" + key, commentValues);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
