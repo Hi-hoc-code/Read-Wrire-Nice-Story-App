@@ -68,17 +68,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public int getItemCount() {
         return listComment.size();
     }
-    private void writeNewPost(String uid, String name, String text) {
-        String key = mDatabase.child("comments").push().getKey();
-        Comment comment = new Comment(uid, name, text);
-        Map<String, Object> commentValues = comment.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/comments/" + key, commentValues);
-        childUpdates.put("/user-comments/" + uid + "/" + key, commentValues);
-
-        mDatabase.updateChildren(childUpdates);
-    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvUsernameComment, tvComment, tvReply;
