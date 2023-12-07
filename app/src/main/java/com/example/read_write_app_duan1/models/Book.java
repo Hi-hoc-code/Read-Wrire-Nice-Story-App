@@ -63,10 +63,12 @@ public class Book {
         this.discription = discription;
         this.content = content;
 
+
     public Book(String name, String image, String id) {
         this.name = name;
         this.image = image;
         this.id = id;
+
 
     }
 

@@ -5,6 +5,4 @@
     <string name="forget_pass"><b>Quên mật khẩu?</b></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="edit">Bạn chưa có Tài khoản ? <b>Đăng Ký</b></string>
-    <string name="edit_slideshow">Bạn chưa có Tài khoản ? <b>Đăng Nhập</b></string>
 </resources>

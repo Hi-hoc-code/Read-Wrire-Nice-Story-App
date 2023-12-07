@@ -53,15 +53,8 @@ public class ReadLibraryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_read_library, container, false);
         unitUi(view);
         // Nhận dữ liệu từ Intent gửi từ Activity
-        Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey("name")) {
-           String  bookName = bundle.getString("name");
-            Log.d("ReadLibraryFragment", "Received book name: " + bookName);
+            getDataFromFireBare();
 
-            // Sử dụng bookName ở đây để thực hiện các thao tác cần thiết
-            // Ví dụ: Gọi hàm lấy dữ liệu từ Firebase
-            getDataFromFireBare(bookName);
-        }
 
 
 
@@ -84,31 +77,34 @@ public class ReadLibraryFragment extends Fragment {
         rvcType.setAdapter(readLibraryAdapter);
     }
 
-    private void getDataFromFireBare(String bookName){
-        databaseReference.orderByChild("name").equalTo(bookName).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void getDataFromFireBare() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("Book");
+        databaseReference.orderByChild("read").equalTo("0").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Lấy dữ liệu từ dataSnapshot và thêm vào list hoặc adapter của RecyclerView
-                        Book book = snapshot.getValue(Book.class);
-                        if (book != null) {
-                            // Thêm dữ liệu vào list hoặc adapter của RecyclerView
-                            bookList.add(book);
-                        }
-                    }
-                    // Sau khi có dữ liệu, cập nhật RecyclerView
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                // Lấy dữ liệu từ dataSnapshot và thêm vào list hoặc adapter của RecyclerView
+                Book book = dataSnapshot.getValue(Book.class);
+                if (book != null) {
+                    // Thêm dữ liệu vào list hoặc adapter của RecyclerView
+                    bookList.add(book);
+                    // Cập nhật RecyclerView sau khi thêm dữ liệu mới
                     readLibraryAdapter.notifyDataSetChanged();
                 }
             }
 
+            // Implement other methods of ChildEventListener if necessary
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {}
 
-            }
-        }); {
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
 
-        }
-        }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+    }
 
 }

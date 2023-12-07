@@ -137,28 +137,45 @@ public class ReadBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Chuyển đến ReadPdfActivity
-
-                // Code trong ReadBookActivity khi muốn chuyển tên sách sang ReadPdfActivity
-
                 Intent intent = new Intent(ReadBookActivity.this, ReadPdfActivity.class);
                 intent.putExtra("name", bookName);
-
-                ReadLibraryFragment fragment = new ReadLibraryFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("name", bookName);
-                fragment.setArguments(bundle);
-
-// Thêm fragment vào LinearLayout
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.linearLayout, fragment) // Thay your_linear_layout_id bằng ID của LinearLayout trong layout của bạn
-                        .commit();
-
-
                 startActivity(intent);
 
+                // Update the 'read' field to "0" in Firebase
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("Book");
+                databaseRef.orderByChild("name").equalTo(bookName).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
+                                // Update the 'read' field to "0"
+                                bookSnapshot.getRef().child("read").setValue("0")
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Handle successful write to Firebase
+                                                Toast.makeText(ReadBookActivity.this, "Read status updated", Toast.LENGTH_SHORT).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Handle failure writing to Firebase
+                                                Log.e("FirebaseUpdate", "Error updating read status: " + e.getMessage());
+                                                Toast.makeText(ReadBookActivity.this, "Failed to update read status", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }
+                    }
 
-
-
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Xử lý khi có lỗi xảy ra trong việc đọc dữ liệu từ Firebase
+                        Log.e("FirebaseError", "Error querying database: " + databaseError.getMessage());
+                        Toast.makeText(ReadBookActivity.this, "Failed to query database", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -170,6 +187,13 @@ public class ReadBookActivity extends AppCompatActivity {
             }
         });
 
+
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
