@@ -83,10 +83,6 @@ public class AddActivityDemo extends AppCompatActivity {
                     if (!category.isEmpty()) {
                         // Tải ảnh lên Firebase Storage
                         uploadImageToFirebase(name, content);
-
-                        Intent intent = new Intent(AddActivityDemo.this, AdminActivity.class);
-                        intent.putExtra("name", name); // Passing "name" data to DuyetActivity
-                        startActivity(intent);
                     } else {
                         // Thông báo cho người dùng chọn loại sách trước khi tải lên
                         Toast.makeText(AddActivityDemo.this, "Please select a category", Toast.LENGTH_SHORT).show();
@@ -95,11 +91,9 @@ public class AddActivityDemo extends AppCompatActivity {
                     // Xử lý khi người dùng chưa chọn ảnh hoặc PDF
                 }
 
-
             }
 
         });
-
 
 
         //handle click, attach pdf
@@ -108,7 +102,7 @@ public class AddActivityDemo extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("application/pdf");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 startActivityForResult(Intent.createChooser(intent, "Select PDF"), PICK_PDF_REQUEST);
 
             }
@@ -198,9 +192,8 @@ public class AddActivityDemo extends AppCompatActivity {
         bookData.put("description", content);
         bookData.put("type", category);
         bookData.put("content", pdfUrl);
-        bookData.put("checkBook", 0);
-        bookData.put("status", 0);
-        bookData.put("write", 0);
+        bookData.put("checkBook", "0");
+        bookData.put("status", "0");
 
         databaseRef.child(bookId).setValue(bookData)
                 .addOnSuccessListener(aVoid -> {

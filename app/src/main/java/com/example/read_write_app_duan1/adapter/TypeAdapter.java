@@ -26,8 +26,8 @@ import java.util.ArrayList;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHoler> implements Filterable {
     Context context;
-   public ArrayList<Type> list, filterList;
-   //instance of our filter class
+    public ArrayList<Type> list, filterList;
+    //instance of our filter class
     private FilterType filterType;
 
     public TypeAdapter(Context context, ArrayList<Type> list) {

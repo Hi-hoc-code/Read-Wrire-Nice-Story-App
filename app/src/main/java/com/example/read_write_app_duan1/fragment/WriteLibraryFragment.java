@@ -55,10 +55,35 @@ public class WriteLibraryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_write_library, container, false);
         addEvents(view);
+//        loadBooksFromFirebase();
         return view;
 
     }
-
+    //    private void loadBooksFromFirebase() {
+//        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("Book");
+//        databaseRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                list.clear();
+//
+//                for (DataSnapshot ds : snapshot.getChildren()) {
+//                    Book book = ds.getValue(Book.class);
+//                    if (book != null) {
+//                        // Thêm sách vào danh sách
+//                        list.add(book);
+//                    }
+//                }
+//
+//                // Cập nhật Adapter với danh sách sách mới
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Xử lý khi truy vấn dữ liệu thất bại
+//            }
+//        });
+//    }
     private void addEvents(View view) {
         rvcType = view.findViewById(R.id.recycleViewWrite);
         Number = view.findViewById(R.id.tvNumberStory);
@@ -66,13 +91,14 @@ public class WriteLibraryFragment extends Fragment {
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext());
         rvcType.setLayoutManager(gridLayoutManager);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Book");
+
         mStorage = FirebaseStorage.getInstance();
         list = new ArrayList<>();
         adapter = new WriteLibraryAdapter(getContext(), list);
         rvcType.setAdapter(adapter);
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("Book");
+        databaseReference.orderByChild("checkBook").equalTo("0").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Book type = new Book();

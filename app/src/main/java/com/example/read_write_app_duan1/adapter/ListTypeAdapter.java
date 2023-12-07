@@ -62,21 +62,21 @@ public class ListTypeAdapter extends RecyclerView.Adapter<ListTypeAdapter.MyView
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
-    TextView order, tvName, descriptionList;
-    ImageView imgList;
-    LinearLayout itemliststory;
+        TextView order, tvName, descriptionList;
+        ImageView imgList;
+        LinearLayout itemliststory;
 
 
 
-    public MyViewHolder(@NonNull View itemView) {
-        super(itemView);
-        order = itemView.findViewById(R.id.oder);
-        tvName = itemView.findViewById(R.id.tvName);
-        descriptionList = itemView.findViewById(R.id.decriptionList);
-        imgList = itemView.findViewById(R.id.imgList);
-        itemliststory = itemView.findViewById(R.id.itemliststory);
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            order = itemView.findViewById(R.id.oder);
+            tvName = itemView.findViewById(R.id.tvName);
+            descriptionList = itemView.findViewById(R.id.decriptionList);
+            imgList = itemView.findViewById(R.id.imgList);
+            itemliststory = itemView.findViewById(R.id.itemliststory);
+        }
     }
-}
     public interface OnItemClickListener {
         void onItemClick(int position);
     }

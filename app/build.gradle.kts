@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.read_write_app_duan1"
-        minSdk = 29
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
     implementation ("com.google.firebase:firebase-auth:22.3.0")
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation("com.google.android.material:material:1.10.0")

@@ -133,7 +133,7 @@ public class ListStoryActivity extends AppCompatActivity {
                 list.add(book);
                 listTypeAdapter.notifyDataSetChanged();
 
-               // update quantity
+                // update quantity
                 updateNumberOfItems();
             }
 

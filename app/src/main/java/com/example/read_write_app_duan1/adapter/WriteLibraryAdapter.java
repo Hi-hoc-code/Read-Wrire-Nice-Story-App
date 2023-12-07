@@ -31,7 +31,7 @@ public class WriteLibraryAdapter extends RecyclerView.Adapter<WriteLibraryAdapte
     @NonNull
     @Override
     public WriteLibraryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_library_write,parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_library_write,parent, false);
         return new WriteLibraryViewHolder(view);
     }
 

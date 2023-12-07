@@ -27,7 +27,7 @@ public class FilterType extends Filter {
             constraint = constraint.toString().toUpperCase();
             ArrayList<Type> list = new ArrayList<>();
             for (int i=0; i<filterList.size(); i++){
-              //validate
+                //validate
                 if (filterList.get(i).getType().toUpperCase().contains(constraint)){
                     //add to filter list
                     list.add(filterList.get(i));

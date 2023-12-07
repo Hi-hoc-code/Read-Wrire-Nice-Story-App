@@ -23,6 +23,18 @@
             android:name=".activities.SlideShowActivity"
             android:exported="true"></activity>
         <activity
+            android:name=".activities.AddActivityDemo"
+            android:exported="true"></activity><activity
+        android:name=".activities.ListStoryActivity"
+        android:exported="true"></activity>
+        <activity
+            android:name=".activities.ReadBookActivity"
+            android:exported="true"></activity>
+        <activity
+            android:name=".activities.ReadPdfActivity"
+            android:exported="true"></activity>
+
+        <activity
             android:name=".activities.ForgotEmailActivity"
             android:exported="false" />
         <activity
@@ -34,15 +46,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.AddStoryActivity"
-            android:exported="false" />
+
         <activity
             android:name=".activities.EditStoryActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.PostActivity"
-            android:exported="true" />
+
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true" />
