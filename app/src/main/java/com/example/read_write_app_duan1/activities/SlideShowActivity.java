@@ -93,13 +93,14 @@ public class SlideShowActivity extends AppCompatActivity {
     }
     private List<SlideShow> getListSlideShow(){
         List<SlideShow> list =  new ArrayList<>();
-        list.add(new SlideShow(R.drawable.image_1));
-        list.add(new SlideShow(R.drawable.images_2));
-        list.add(new SlideShow(R.drawable.images_3));
-        list.add(new SlideShow(R.drawable.images_4));
-        list.add(new SlideShow(R.drawable.images_5));
-        list.add(new SlideShow(R.drawable.images_6));
-        list.add(new SlideShow(R.drawable.images_7));
+        list.add(new SlideShow(R.drawable.anhslide1));
+        list.add(new SlideShow(R.drawable.anhslide2));
+        list.add(new SlideShow(R.drawable.anhslide3));
+        list.add(new SlideShow(R.drawable.anhslide4));
+        list.add(new SlideShow(R.drawable.anhslide5));
+        list.add(new SlideShow(R.drawable.anhslide6));
+        list.add(new SlideShow(R.drawable.anhslide7));
+        list.add(new SlideShow(R.drawable.anhslide8));
         return list;
     }
 

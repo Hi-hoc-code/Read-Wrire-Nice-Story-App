@@ -18,11 +18,13 @@
             android:src="@drawable/img"/>
     </androidx.cardview.widget.CardView>
     <TextView
+        android:id="@+id/tvUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Adminstrator"
         android:textSize="22sp"/>
     <TextView
+        android:id="@+id/tvGmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="admin@gmail.com"

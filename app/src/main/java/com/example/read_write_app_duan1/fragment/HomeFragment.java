@@ -38,14 +38,18 @@
 //        rcvRecommendStory.setAdapter(recommendStoryAdapter);
 package com.example.read_write_app_duan1.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ShareCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -53,6 +57,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
+import com.example.read_write_app_duan1.activities.LoginActivity;
 import com.example.read_write_app_duan1.adapter.HuongDanHocTapAdapter;
 import com.example.read_write_app_duan1.adapter.LichSuAdapter;
 import com.example.read_write_app_duan1.adapter.TieuThuyetAdapter;
@@ -61,6 +66,9 @@ import com.example.read_write_app_duan1.adapter.TruyenCoTichAdapter;
 import com.example.read_write_app_duan1.adapter.TruyenThuyetAdapter;
 import com.example.read_write_app_duan1.models.Book;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,7 +83,8 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
     DatabaseReference databaseReference;
-    FirebaseStorage mStorage;
+    public static String AUTHOR;
+
     RecyclerView rcvTieuThuyet, rcvTruyenThuyet, rcvCoTich, rcvTinhYeu, rcvHuongDanHocTap, rcvLichSuChinhTri;
     DrawerLayout drawerLayout;
     ShapeableImageView imgAvatar;
@@ -86,6 +95,7 @@ public class HomeFragment extends Fragment {
     TinhYeuAdapter tinhYeuAdapter;
     LichSuAdapter lichSuAdapter;
     TruyenThuyetAdapter truyenThuyetAdapter;
+    NavigationView navigationView;
 
 
     @Nullable
@@ -105,15 +115,84 @@ public class HomeFragment extends Fragment {
         loadDataForCategory("Truyện cổ tích");
         imgAvatar  = view.findViewById(R.id.imgAvatar);
         drawerLayout = view.findViewById(R.id.drawerLayout);
+        navigationView = view.findViewById(R.id.navigationView);
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvUsername = headerView.findViewById(R.id.tvUsername);
+        TextView tvEmail = headerView.findViewById(R.id.tvGmail);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userid = user.getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user");
+        ref.child(userid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                AUTHOR = snapshot.child("username").getValue().toString();
+                tvUsername.setText(AUTHOR);
+                tvEmail.setText(snapshot.child("email").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         // Click imgAvatar open/ close drawer navigation
+
+        //Logout
+
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)){
                     drawerLayout.closeDrawer(GravityCompat.START);
+
                 }else{
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
+            }
+        });
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.getItemId() == R.id.draw_nav_home){
+                    HomeFragment homeFragment = new HomeFragment();
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frameLayout, homeFragment)
+                            .commit();
+                    drawerLayout.close();
+                }
+                if(item.getItemId() == R.id.draw_nav_search){
+                    SearchFragment searchFragment = new SearchFragment();
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frameLayout, searchFragment)
+                            .commit();
+                    drawerLayout.close();
+                }
+                if(item.getItemId() == R.id.draw_nav_notice){
+                    NotiveFragment notiveFragment = new NotiveFragment();
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frameLayout, notiveFragment)
+                            .commit();
+                    drawerLayout.close();
+                }
+                if(item.getItemId() == R.id.draw_nav_setting){
+                    SearchFragment searchFragment = new SearchFragment();
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frameLayout, searchFragment)
+                            .commit();
+                    drawerLayout.close();
+                }
+                if(item.getItemId() == R.id.draw_nav_logout){
+                    startActivity(new Intent(getContext(), LoginActivity.class));
+                }
+                return true;
             }
         });
         // RecycleView book-> type

@@ -1,5 +1,7 @@
 package com.example.read_write_app_duan1.fragment;
 
+import static com.example.read_write_app_duan1.fragment.HomeFragment.AUTHOR;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +19,7 @@ import com.example.read_write_app_duan1.activities.EditStoryActivity;
 import com.example.read_write_app_duan1.activities.LoginActivity;
 
 public class WriteFragment extends Fragment {
-    private TextView tvEdit, tvWriteNew;
+    private TextView tvEdit, tvWriteNew,usernameWrite;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,7 +27,9 @@ public class WriteFragment extends Fragment {
 
         tvEdit = view.findViewById(R.id.tvEditStory);
         tvWriteNew = view.findViewById(R.id.tvWriteNewStory);
+        usernameWrite = view.findViewById(R.id.usernameWrite);
 
+        usernameWrite.setText(AUTHOR);
         tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

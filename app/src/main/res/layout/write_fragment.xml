@@ -17,9 +17,11 @@
             android:textStyle="bold"
             />
         <TextView
+            android:id="@+id/usernameWrite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lê Quang Hòa"
+            android:textColor="@color/primary_color"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginLeft="110dp"
@@ -27,7 +29,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/logo"
+            android:src="@drawable/outline_person_24"
             android:layout_marginLeft="5dp"
             />
     </LinearLayout>
