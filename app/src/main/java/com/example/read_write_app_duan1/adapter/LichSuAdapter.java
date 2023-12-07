@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.read_write_app_duan1.R;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 
 public class LichSuAdapter  extends BookAdapter{
 
-    public LichSuAdapter(Context context, ArrayList<Book> list) {
+
+    public LichSuAdapter(Context context, ArrayList<Book> list, FragmentManager fragmentManager) {
         super(context, list);
     }
 }
