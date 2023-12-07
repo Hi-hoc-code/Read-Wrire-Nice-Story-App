@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.read_write_app_duan1"
-        minSdk = 28
+        minSdk = 27
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
