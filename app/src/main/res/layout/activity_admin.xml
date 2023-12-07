@@ -6,14 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".activities.AdminActivity"
     android:orientation="vertical">
+   <TextView
+       android:id="@+id/back"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="Back"
+       android:textStyle="bold"
+       android:textSize="20sp"
+       />
+   <TextView
+       android:id="@+id/BackHome"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="BackHome"
+       android:textStyle="bold"
+       android:textSize="20sp"
+       />
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/recyView"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"/>
-<Button
-    android:id="@+id/back"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Back"
-  />
+
 </LinearLayout>
