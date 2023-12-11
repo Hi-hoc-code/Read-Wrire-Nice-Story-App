@@ -1,5 +1,6 @@
 package com.example.read_write_app_duan1.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,10 @@ public class LibraryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // Set màu cho văn bản ở TabLayout
+        tabLayout.setTabTextColors(Color.parseColor("#FFFFFF"), Color.parseColor("#FF9901"));
+        // Set màu cho thanh chuyển khi được chọn
+        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF9901"));
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
