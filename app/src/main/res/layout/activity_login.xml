@@ -8,6 +8,7 @@
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
     android:gravity="center"
+    android:id="@+id/layoutLogin"
     android:orientation="vertical">
 
     <ImageView

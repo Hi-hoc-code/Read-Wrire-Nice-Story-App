@@ -4,12 +4,18 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,8 +74,10 @@ public class LoginActivity extends AppCompatActivity {
         tvquenmk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ForgotEmailActivity.class);
-                startActivity(intent);
+
+                openDialogEmail();
+
+
             }
         });
 
@@ -150,4 +158,64 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }
-}
+    private void openDialogEmail(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.layout_dialog_forgot, null);
+        builder.setView(view);
+        //show len man hinh
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+
+        findViewById(R.id.layoutLogin).setVisibility(View.GONE);
+
+        // Set a callback when the dialog is dismissed
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                // Set the visibility of the login screen back to VISIBLE
+                findViewById(R.id.layoutLogin).setVisibility(View.VISIBLE);
+            }
+        });
+        //hien thi bo goc mat di lhoang trang
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //anh xa
+        EditText edtEmail = view.findViewById(R.id.edtNhapGmail);
+        Button btnSend = view.findViewById(R.id.btnForgotPasswordEmail);
+        Button btnCancel = view.findViewById(R.id.btnNoThank);
+
+        //
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        //ut gui
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String emailAddress = edtEmail.getText().toString();
+                if (!emailAddress.matches("^[a-zA-Z][a-zA-Z0-9._]+@gmail\\.com$")) {
+                    edtEmail.setError("Invalid email format");
+                    return;
+                }
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                auth.sendPasswordResetEmail(emailAddress)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@android.support.annotation.NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "Email sent.");
+                                    alertDialog.dismiss();
+                                    Toast.makeText(LoginActivity.this, "Đã Gửi về Gmail, Vui Lòng Check Gmail", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
+    }
+    }
